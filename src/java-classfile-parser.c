@@ -215,7 +215,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_ClassFile_freev(allocated)               \
   if (allocated != NULL) {                                              \
     __JAVA_CLASSFILE_PARSER_ClassFile_freev(allocated)                  \
-   free(allocated);                                                     \
+    free(allocated);                                                    \
   }
 
 #define _JAVA_CLASSFILE_PARSER_cp_info(endianness, onstack, bufferp, lengthl) do { \
@@ -424,6 +424,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Fieldref_info_freev(p) do {    \
     if (p != NULL) {                                                   \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Fieldref_info_freev(p)          \
+      free(p);                                                         \
     }                                                                  \
 } while (0)
 
@@ -477,6 +478,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Integer_info_freev(p) do {    \
     if (p != NULL) {                                                  \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Integer_info_freev(p)          \
+      free(p);                                                       \
     }                                                                 \
 } while (0)
 
