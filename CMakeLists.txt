@@ -3,17 +3,12 @@ IF (NOT MYPACKAGEBOOTSTRAP_DONE)
   INCLUDE ("3rdparty/github/cmake-utils/cmake/MyPackageBootstrap.cmake")
 ENDIF ()
 
-MYPACKAGESTART (java-classfile-parser 1 0 0)
+MYPACKAGESTART (java_classfile_parser 1 0 0)
 
 MYPACKAGELIBRARY(
   ${CMAKE_CURRENT_SOURCE_DIR}/include/config.h.in
-  ${INCLUDE_OUTPUT_PATH}/javap/internal/config.h
+  ${INCLUDE_OUTPUT_PATH}/java-classfile-parser/internal/config.h
   src/java-classfile-parser.c)
-
-################
-# Dependencies #
-################
-MYPACKAGEDEPENDENCY (genericLogger "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/github/genericLogger" LIBS)
 
 ################
 # Executables  #
