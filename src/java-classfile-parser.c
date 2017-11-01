@@ -125,18 +125,18 @@ static const int _java_classfile_parse_bigendian = 1;
     java_classfile_parser_u2_t _u2;                                     \
     if (sizeof(java_classfile_parser_u2_t) == 2) {                      \
       memcpy(&_u2, bufferp, 2);                                         \
-      onstack.u2 = __JAVA_CLASSFILE_PARSER_NTOHS_LE(_u2);               \
       bufferp += 2;                                                     \
     } else {                                                            \
       java_classfile_parser_u1_t _u1[2];                                \
                                                                         \
       _u1[0] = *bufferp++;                                              \
       _u1[1] = *bufferp++;                                              \
-      onstack.u2 = _u1[0];                                              \
-      onstack.u2 <<= 8;                                                 \
-      onstack.u2 |= _u1[1];                                             \
+      _u2 = _u1[0];                                                     \
+      _u2 <<= 8;                                                        \
+      _u2 |= _u1[1];                                                    \
     }                                                                   \
     lengthl -= 2;                                                       \
+    onstack.u2 = __JAVA_CLASSFILE_PARSER_NTOHS_LE(_u2);                 \
     __JAVA_CLASSFILE_PARSER_TRACE_U2(onstack.u2, _u2, bufferp, lengthl) \
   } else {                                                              \
     __JAVA_CLASSFILE_PARSER_FREEV(type, onstack);                       \
@@ -190,17 +190,17 @@ static const int _java_classfile_parse_bigendian = 1;
       _u1[1] = *bufferp++;                                              \
       _u1[2] = *bufferp++;                                              \
       _u1[3] = *bufferp++;                                              \
-      onstack.u4 = _u1[0];                                              \
-      onstack.u4 <<= 8;                                                 \
-      onstack.u4 |= _u1[1];                                             \
-      onstack.u4 <<= 8;                                                 \
-      onstack.u4 |= _u1[2];                                             \
-      onstack.u4 <<= 8;                                                 \
-      onstack.u4 |= _u1[3];                                             \
-      onstack.u4 <<= 8;                                                 \
+      _u4 = _u1[0];                                                     \
+      _u4 <<= 8;                                                        \
+      _u4 |= _u1[1];                                                    \
+      _u4 <<= 8;                                                        \
+      _u4 |= _u1[2];                                                    \
+      _u4 <<= 8;                                                        \
+      _u4 |= _u1[3];                                                    \
+      _u4 <<= 8;                                                        \
     }                                                                   \
     lengthl -= 4;                                                       \
-    onstack.u4 = __JAVA_CLASSFILE_PARSER_NTOHL_LE(_u4);               \
+    onstack.u4 = __JAVA_CLASSFILE_PARSER_NTOHL_LE(_u4);                 \
     __JAVA_CLASSFILE_PARSER_TRACE_U4(onstack.u4, _u4, bufferp, lengthl) \
   } else {                                                              \
     __JAVA_CLASSFILE_PARSER_FREEV(type, onstack);                       \
