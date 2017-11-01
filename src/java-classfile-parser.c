@@ -7,21 +7,21 @@ static const int _java_classfile_parse_bigendian = 1;
 
 #ifndef JAVA_CLASSFILE_PARSER_NTRACE
 # ifdef JAVA_CLASSFILE_PARSER_LOGGER
-#   define __JAVA_CLASSFILE_PARSER_TRACE_CHAR(u1, be1, bufferp, lengthl) ((u1 >= 0x20) && (u1 <= 0x7E)) ? JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]       0x%02x ->       0x%02x %s=%u '%c', remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned char) u1, (unsigned long) lengthl) : JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]       0x%02x ->       0x%02x %s=%u (not printable), remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl)
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U1(u1, be1, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]       0x%02x ->       0x%02x %s=%u, remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(u1p, u1l, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U1*]           ->            %s, remains %lu", bufferp - u1l, #u1p, (unsigned long) lengthl);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U2(u2, be2, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U2]     0x%04x ->     0x%04x %s=%u, remains %lu", bufferp - 2, (unsigned int) be2, (unsigned int) u22, #u2, (unsigned int) u2, (unsigned long) lengthl);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(u2p, u2l, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U2*]           ->            %s, remains %lu", bufferp - (u2l * 2), #u2p, (unsigned long) lengthl);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U4(u4, be4, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U4] 0x%08lx -> 0x%08lx%s=%lu, remains %lu", bufferp - 4, (unsigned long) be4, (unsigned long) u4, #u4, (unsigned long) u4, (unsigned long) lengthl);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_CHAR(u1, be1, bufferp, lengthl) ((u1 >= 0x20) && (u1 <= 0x7E)) ? JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]        0x%02x ->       0x%02x %s=%u '%c', remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned char) u1, (unsigned long) lengthl) : JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]        0x%02x ->       0x%02x %s=%u (not printable), remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl)
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U1(u1, be1, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]        0x%02x ->       0x%02x %s=%u, remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(u1p, u1l, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U1*]            ->            %s, remains %lu", bufferp - u1l, #u1p, (unsigned long) lengthl);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U2(u2, be2, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U2]      0x%04x ->     0x%04x %s=%u, remains %lu", bufferp - 2, (unsigned int) be2, (unsigned int) u22, #u2, (unsigned int) u2, (unsigned long) lengthl);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(u2p, u2l, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U2*]            ->            %s, remains %lu", bufferp - (u2l * 2), #u2p, (unsigned long) lengthl);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U4(u4, be4, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U4]  0x%08lx -> 0x%08lx%s=%lu, remains %lu", bufferp - 4, (unsigned long) be4, (unsigned long) u4, #u4, (unsigned long) u4, (unsigned long) lengthl);
 #  else
-#   define __JAVA_CLASSFILE_PARSER_TRACE_CHAR(u1, be1, bufferp, lengthl) ((u1 >= 0x20) && (u1 <= 0x7E)) ? fprintf(stderr, "%p[U1]       0x%02x ->       0x%02x %s=%u '%c', remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned char) u1, (unsigned long) lengthl) : fprintf(stderr, "%p[U1]       0x%02x ->       0x%02x %s=%u (not printable), remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U1(u1, be1, bufferp, lengthl) fprintf(stderr, "%p[U1]       0x%02x ->       0x%02x %s=%u, remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(u1p, u1l, bufferp, lengthl) fprintf(stderr, "%p[U1*]           ->            %s, remains %lu\n", bufferp - u1l, #u1p, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U2(u2, be2, bufferp, lengthl) fprintf(stderr, "%p[U2]     0x%04x ->     0x%04x %s=%u, remains %lu\n", bufferp - 2, (unsigned int) be2, (unsigned int) u2, #u2, (unsigned int) u2, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(u2p, u2l, bufferp, lengthl) fprintf(stderr, "%p[U2*]           ->            %s, remains %lu\n", bufferp - (u2l * 2), #u2p, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U4(u4, be4, bufferp, lengthl) fprintf(stderr, "%p[U4] 0x%08lx -> 0x%08lx %s=%lu, remains %lu\n", bufferp - 4, (unsigned long) be4, (unsigned long) u4, #u4, (unsigned long) u4, (unsigned long) lengthl); fflush(stderr);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_CHAR(u1, be1, bufferp, lengthl) ((u1 >= 0x20) && (u1 <= 0x7E)) ? fprintf(stderr, "%p[U1]        0x%02x ->       0x%02x %s=%u '%c', remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned char) u1, (unsigned long) lengthl) : fprintf(stderr, "%p[U1]        0x%02x ->       0x%02x %s=%u (not printable), remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl); fflush(stderr);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U1(u1, be1, bufferp, lengthl) fprintf(stderr, "%p[U1]        0x%02x ->       0x%02x %s=%u, remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl); fflush(stderr);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(u1p, u1l, bufferp, lengthl) fprintf(stderr, "%p[U1*]            ->            %s, remains %lu\n", bufferp - u1l, #u1p, (unsigned long) lengthl); fflush(stderr);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U2(u2, be2, bufferp, lengthl) fprintf(stderr, "%p[U2]      0x%04x ->     0x%04x %s=%u, remains %lu\n", bufferp - 2, (unsigned int) be2, (unsigned int) u2, #u2, (unsigned int) u2, (unsigned long) lengthl); fflush(stderr);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(u2p, u2l, bufferp, lengthl) fprintf(stderr, "%p[U2*]            ->            %s, remains %lu\n", bufferp - (u2l * 2), #u2p, (unsigned long) lengthl); fflush(stderr);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U4(u4, be4, bufferp, lengthl) fprintf(stderr, "%p[U4]  0x%08lx -> 0x%08lx %s=%lu, remains %lu\n", bufferp - 4, (unsigned long) be4, (unsigned long) u4, #u4, (unsigned long) u4, (unsigned long) lengthl); fflush(stderr);
 #   define __JAVA_CLASSFILE_PARSER_TRACE(msgs) fprintf(stderr, msgs "\n")
-#   define __JAVA_CLASSFILE_PARSER_TRACEF(fmts, msgs, ...) fprintf(stderr, fmts "\n", msgs, __VA_ARGS__)
+#   define __JAVA_CLASSFILE_PARSER_TRACEF(fmts, ...) fprintf(stderr, fmts "\n", __VA_ARGS__)
 #  endif
 #else
 # define __JAVA_CLASSFILE_PARSER_TRACE_U1(u1, be1, bufferp, lengthl)
@@ -30,7 +30,7 @@ static const int _java_classfile_parse_bigendian = 1;
 # define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(u2p, u2l, bufferp, lengthl)
 # define __JAVA_CLASSFILE_PARSER_TRACE_U4(u4, be4, bufferp, lengthl)
 # define __JAVA_CLASSFILE_PARSER_TRACE(msgs)
-# define __JAVA_CLASSFILE_PARSER_TRACEF(fmts, msgs)
+# define __JAVA_CLASSFILE_PARSER_TRACEF(fmts, ...)
 #endif
 
 /* These macros are executed only when current binary is low endian */
@@ -44,6 +44,7 @@ static const int _java_classfile_parse_bigendian = 1;
                                              ((((java_classfile_parser_u4_t)(n) & 0xFF000000)) >> 24))
 
 #define __JAVA_CLASSFILE_PARSER_FREEV(type, onstack)                    \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... __JAVA_CLASSFILE_PARSER_FREEV(type=%s, &(onstack)=%p)", #type, &(onstack)); \
   java_classfile_parser_##type##_t *_tofreep = &(onstack);              \
   __JAVA_CLASSFILE_PARSER_##type##_freev(_tofreep)                      \
 
@@ -123,7 +124,7 @@ static const int _java_classfile_parse_bigendian = 1;
     return NULL;                                                        \
   }
 
-/* Notes: counters are always stored in an u2 as per the spec */
+/* Notes: U2 counters are always stored in an u2 as per the spec */
 #define _JAVA_CLASSFILE_PARSER_U2_ARRAY_BE(type, onstack, arrayp, arrayl, bufferp, lengthl) \
   {                                                                     \
     size_t _arrayl = onstack.arrayl;                                    \
@@ -336,9 +337,15 @@ static const int _java_classfile_parse_bigendian = 1;
         __JAVA_CLASSFILE_PARSER_FREEV(ClassFile, onstack);              \
         return NULL;                                                    \
       }                                                                 \
-      for (_i = 0; _i < _max; _i++) {                                   \
+      onstack.constant_pool_count = 1;                                  \
+      for (_i = 0; _i < _max; _i++, onstack.constant_pool_count++) {    \
         onstack.constant_poolpp[_i] = _java_classfile_parser_cp_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
         if (onstack.constant_poolpp[_i] == NULL) {                      \
+          java_classfile_parser_u2_t _j;                                \
+                                                                        \
+          for (_j = _i+1; _j < _max; _j++) {                            \
+            onstack.constant_poolpp[_j] == NULL;                        \
+          }                                                             \
           __JAVA_CLASSFILE_PARSER_FREEV(ClassFile, onstack);            \
           return NULL;                                                  \
         }                                                               \
@@ -369,9 +376,15 @@ static const int _java_classfile_parse_bigendian = 1;
         __JAVA_CLASSFILE_PARSER_FREEV(ClassFile, onstack);              \
         return NULL;                                                    \
       }                                                                 \
-      for (_i = 0; _i < _max; _i++) {                                   \
+      onstack.fields_count = 0;                                         \
+      for (_i = 0; _i < _max; _i++, onstack.fields_count++) {           \
         onstack.fieldspp[_i] = _java_classfile_parser_field_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
         if (onstack.fieldspp[_i] == NULL) {                             \
+          java_classfile_parser_u2_t _j;                                \
+                                                                        \
+          for (_j = _i+1; _j < _max; _j++) {                            \
+            onstack.fieldspp[_j] == NULL;                               \
+          }                                                             \
           __JAVA_CLASSFILE_PARSER_FREEV(ClassFile, onstack);            \
           return NULL;                                                  \
         }                                                               \
@@ -380,34 +393,46 @@ static const int _java_classfile_parse_bigendian = 1;
   } while (0)
 
 #define __JAVA_CLASSFILE_PARSER_ClassFile_freev(p)                      \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... __JAVA_CLASSFILE_PARSER_ClassFile_freev(%p)", p); \
   if (p->constant_poolpp != NULL) {                                     \
+    __JAVA_CLASSFILE_PARSER_TRACEF("... ClassFile->constant_pool_count=%lu)", (unsigned long) p->constant_pool_count); \
     if (p->constant_pool_count > 1) {                                   \
       java_classfile_parser_u2_t _max = p->constant_pool_count - 1;     \
       java_classfile_parser_u2_t _i;                                    \
       for (_i = 0; _i < _max; _i++) {                                   \
+        __JAVA_CLASSFILE_PARSER_TRACEF("_JAVA_CLASSFILE_PARSER_cp_info_freev(ClassFile->constant_poolpp[%lu]=%p)", (unsigned long) _i, p->constant_poolpp[_i]); \
         _JAVA_CLASSFILE_PARSER_cp_info_freev(p->constant_poolpp[_i]);   \
       }                                                                 \
     }                                                                   \
+    __JAVA_CLASSFILE_PARSER_TRACEF("free(ClassFile->constant_poolp=%p)", p->constant_poolpp); \
     free(p->constant_poolpp);                                           \
   }                                                                     \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... ClassFile->interfacesp=%p)", p->interfacesp); \
   if (p->interfacesp != NULL) {                                         \
+    __JAVA_CLASSFILE_PARSER_TRACEF("free(ClassFile->interfacesp=%p)", p->interfacesp); \
     free(p->interfacesp);                                               \
   }                                                                     \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... ClassFile->fieldspp=%p)", p->fieldspp); \
   if (p->fieldspp != NULL) {                                            \
+    __JAVA_CLASSFILE_PARSER_TRACEF("... ClassFile->fields_count=%lu)", (unsigned long) p->fields_count); \
     if (p->fields_count > 0) {                                          \
       java_classfile_parser_u2_t _max = p->fields_count;                \
       java_classfile_parser_u2_t _i;                                    \
       for (_i = 0; _i < _max; _i++) {                                   \
+        __JAVA_CLASSFILE_PARSER_TRACEF("_JAVA_CLASSFILE_PARSER_field_info_freev(ClassFile->fieldspp[%lu]=%p)", (unsigned long) _i, p->fieldspp[_i]); \
         _JAVA_CLASSFILE_PARSER_field_info_freev(p->fieldspp[_i]);       \
       }                                                                 \
     }                                                                   \
+    __JAVA_CLASSFILE_PARSER_TRACEF("free(ClassFile->fieldspp=%p)", p->fieldspp); \
     free(p->fieldspp);                                                  \
   }
 
-#define _JAVA_CLASSFILE_PARSER_ClassFile_freev(allocated)               \
-  if (allocated != NULL) {                                              \
-    __JAVA_CLASSFILE_PARSER_ClassFile_freev(allocated)                  \
-    free(allocated);                                                    \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_freev(p)                       \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... _JAVA_CLASSFILE_PARSER_ClassFile_freev(%p)", p); \
+  if (p != NULL) {                                                      \
+    __JAVA_CLASSFILE_PARSER_ClassFile_freev(p)                          \
+    __JAVA_CLASSFILE_PARSER_TRACEF("free(ClassFile=%p)", p);            \
+    free(p);                                                            \
   }
 
 #define _JAVA_CLASSFILE_PARSER_cp_info(endianness, onstack, bufferp, lengthl) do { \
@@ -533,6 +558,7 @@ static const int _java_classfile_parse_bigendian = 1;
 } while (0)
 
 #define __JAVA_CLASSFILE_PARSER_cp_info_freev(p)                        \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... __JAVA_CLASSFILE_PARSER_cp_info_freev(%p)", p); \
     switch (p->tag) {                                                   \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class:                  \
       _JAVA_CLASSFILE_PARSER_CONSTANT_Class_info_freev(p->u.classInfop); \
@@ -587,24 +613,91 @@ static const int _java_classfile_parse_bigendian = 1;
     }
 
 #define _JAVA_CLASSFILE_PARSER_cp_info_freev(p) do {                    \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... _JAVA_CLASSFILE_PARSER_cp_info_freev(%p)", p); \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_cp_info_freev(p)                          \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(cp_info=%p)", p);            \
       free(p);                                                          \
     }                                                                   \
   } while (0)
 
 #define _JAVA_CLASSFILE_PARSER_field_info(endianness, onstack, bufferp, lengthl) do { \
+    onstack.attributes_count = 0;                                       \
+    onstack.attributespp = 0;                                           \
+                                                                        \
     _JAVA_CLASSFILE_PARSER_U2(field_info, onstack, endianness, access_flags, bufferp, lengthl); \
     _JAVA_CLASSFILE_PARSER_U2(field_info, onstack, endianness, name_index, bufferp, lengthl); \
     _JAVA_CLASSFILE_PARSER_U2(field_info, onstack, endianness, descriptor_index, bufferp, lengthl); \
     _JAVA_CLASSFILE_PARSER_U2(field_info, onstack, endianness, attributes_count, bufferp, lengthl); \
+    if (onstack.attributes_count > 0) {                                 \
+      java_classfile_parser_u2_t _max = onstack.attributes_count;       \
+      java_classfile_parser_u2_t _i;                                    \
+                                                                        \
+      onstack.attributespp = (java_classfile_parser_attribute_info_t **) malloc(_max * sizeof(java_classfile_parser_attribute_info_t *)); \
+      if (onstack.attributespp == NULL) {                               \
+        __JAVA_CLASSFILE_PARSER_FREEV(field_info, onstack);             \
+        return NULL;                                                    \
+      }                                                                 \
+      onstack.attributes_count = 0;                                     \
+      for (_i = 0; _i < _max; _i++, onstack.attributes_count++) {       \
+        onstack.attributespp[_i] = _java_classfile_parser_attribute_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
+        if (onstack.attributespp[_i] == NULL) {                         \
+          java_classfile_parser_u2_t _j;                                \
+                                                                        \
+          for (_j = _i+1; _j < _max; _j++) {                            \
+            onstack.attributespp[_j] == NULL;                               \
+          }                                                             \
+          __JAVA_CLASSFILE_PARSER_FREEV(field_info, onstack);           \
+          return NULL;                                                  \
+        }                                                               \
+      }                                                                 \
+    }                                                                   \
 } while (0)
 
-#define __JAVA_CLASSFILE_PARSER_field_info_freev(p)                     /* No op */
+#define __JAVA_CLASSFILE_PARSER_field_info_freev(p)                     \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... __JAVA_CLASSFILE_PARSER_field_info_freev(%p)", p); \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... field_info->attributespp=%p)", p->attributespp); \
+  if (p->attributespp != NULL) {                                        \
+    __JAVA_CLASSFILE_PARSER_TRACEF("... field_info->attributes_count=%lu)", (unsigned long) p->attributes_count); \
+    if (p->attributes_count > 0) {                                      \
+      java_classfile_parser_u2_t _max = p->attributes_count;            \
+      java_classfile_parser_u2_t _i;                                    \
+      for (_i = 0; _i < _max; _i++) {                                   \
+        __JAVA_CLASSFILE_PARSER_TRACEF("_JAVA_CLASSFILE_PARSER_attribute_info_freev(field_info->attributespp[%lu]=%p)", (unsigned long) _i, p->attributespp[_i]); \
+        _JAVA_CLASSFILE_PARSER_attribute_info_freev(p->attributespp[_i]); \
+      }                                                                 \
+    }                                                                   \
+    __JAVA_CLASSFILE_PARSER_TRACEF("free(field_info->attributespp=%p)", p->attributespp); \
+    free(p->attributespp);                                              \
+  }
 
 #define _JAVA_CLASSFILE_PARSER_field_info_freev(p) do {                 \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... _JAVA_CLASSFILE_PARSER_field_info_freev(%p)", p); \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_field_info_freev(p)                       \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(field_info=%p)", p);         \
+      free(p);                                                          \
+    }                                                                   \
+  } while (0)
+
+#define _JAVA_CLASSFILE_PARSER_attribute_info(endianness, onstack, bufferp, lengthl) do { \
+    _JAVA_CLASSFILE_PARSER_U2(attribute_info, onstack, endianness, attribute_name_index, bufferp, lengthl); \
+    _JAVA_CLASSFILE_PARSER_U4(attribute_info, onstack, endianness, attribute_length, bufferp, lengthl); \
+    _JAVA_CLASSFILE_PARSER_U1_ARRAY(attribute_info, onstack, endianness, infop, attribute_length, bufferp, lengthl); \
+} while (0)
+
+#define __JAVA_CLASSFILE_PARSER_attribute_info_freev(p)                 \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... __JAVA_CLASSFILE_PARSER_attribute_info_freev(%p)", p); \
+  if (p->infop != NULL) {                                               \
+    __JAVA_CLASSFILE_PARSER_TRACEF("free(attribute_info->infop=%p)", p->infop); \
+    free(p->infop);                                                     \
+  }
+
+#define _JAVA_CLASSFILE_PARSER_attribute_info_freev(p) do {             \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... _JAVA_CLASSFILE_PARSER_attribute_info_freev(%p)", p); \
+    if (p != NULL) {                                                    \
+      __JAVA_CLASSFILE_PARSER_attribute_info_freev(p)                   \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(attribute_info=%p)", p);     \
       free(p);                                                          \
     }                                                                   \
   } while (0)
@@ -616,8 +709,10 @@ static const int _java_classfile_parse_bigendian = 1;
 #define __JAVA_CLASSFILE_PARSER_CONSTANT_Class_info_freev(p) /* No op */
 
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Class_info_freev(p) do {    \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... _JAVA_CLASSFILE_PARSER_CONSTANT_Class_info_freev(%p)", p); \
     if (p != NULL) {                                                \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Class_info_freev(p)          \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Class_info=%p)", p);  \
       free(p);                                                      \
     }                                                               \
 } while (0)
@@ -630,8 +725,10 @@ static const int _java_classfile_parse_bigendian = 1;
 #define __JAVA_CLASSFILE_PARSER_CONSTANT_Fieldref_info_freev(p) /* No op */
 
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Fieldref_info_freev(p) do {    \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... _JAVA_CLASSFILE_PARSER_CONSTANT_Fieldref_info_freev(%p)", p); \
     if (p != NULL) {                                                   \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Fieldref_info_freev(p)          \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Fieldref_info=%p)", p);  \
       free(p);                                                         \
     }                                                                  \
 } while (0)
@@ -644,8 +741,10 @@ static const int _java_classfile_parse_bigendian = 1;
 #define __JAVA_CLASSFILE_PARSER_CONSTANT_Methodref_info_freev(p) /* No op */
 
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Methodref_info_freev(p) do {    \
+  __JAVA_CLASSFILE_PARSER_TRACEF("... _JAVA_CLASSFILE_PARSER_CONSTANT_Methodref_info_freev(%p)", p); \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Methodref_info_freev(p)          \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Methodref_info=%p)", p);  \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -660,6 +759,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_InterfaceMethodref_info_freev(p) do { \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_InterfaceMethodref_info_freev(p) \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_InterfaceMethodref_info=%p)", p);  \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -673,6 +773,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_String_info_freev(p) do {    \
     if (p != NULL) {                                                 \
       __JAVA_CLASSFILE_PARSER_CONSTANT_String_info_freev(p)          \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_String_info=%p)", p);  \
       free(p);                                                       \
     }                                                                \
 } while (0)
@@ -686,7 +787,8 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Integer_info_freev(p) do {    \
     if (p != NULL) {                                                  \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Integer_info_freev(p)          \
-      free(p);                                                       \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Integer_info=%p)", p);  \
+      free(p);                                                        \
     }                                                                 \
 } while (0)
 
@@ -699,6 +801,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Float_info_freev(p) do {        \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Float_info_freev(p)              \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Float_info=%p)", p); \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -713,6 +816,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Long_info_freev(p) do {         \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Long_info_freev(p)               \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Long_info=%p)", p); \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -727,6 +831,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Double_info_freev(p) do {       \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Double_info_freev(p)             \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Double_info=%p)", p); \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -741,6 +846,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_NameAndType_info_freev(p) do {  \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_NameAndType_info_freev(p)        \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_NameAndType_info=%p)", p); \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -752,12 +858,14 @@ static const int _java_classfile_parse_bigendian = 1;
 
 #define __JAVA_CLASSFILE_PARSER_CONSTANT_Utf8_info_freev(p)             \
   if (p->bytesp != NULL) {                                              \
+    __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Utf8_info->bytesp=%p)", p->bytesp); \
     free(p->bytesp);                                                    \
   }
 
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Utf8_info_freev(p) do {         \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Utf8_info_freev(p)               \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Utf8_info=%p)", p); \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -772,6 +880,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_MethodHandle_info_freev(p) do { \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_MethodHandle_info_freev(p)       \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_MethodHandle_info=%p)", p); \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -785,6 +894,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_MethodType_info_freev(p) do {   \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_MethodType_info_freev(p)         \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_MethodType_info=%p)", p); \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -799,6 +909,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_InvokeDynamic_info_freev(p) do { \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_InvokeDynamic_info_freev(p)      \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_InvokeDynamic_info=%p)", p); \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -812,6 +923,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Module_info_freev(p) do {       \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Module_info_freev(p)             \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Module_info=%p)", p); \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -825,6 +937,7 @@ static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_CONSTANT_Package_info_freev(p) do {      \
     if (p != NULL) {                                                    \
       __JAVA_CLASSFILE_PARSER_CONSTANT_Package_info_freev(p)            \
+      __JAVA_CLASSFILE_PARSER_TRACEF("free(CONSTANT_Package_info=%p)", p); \
       free(p);                                                          \
     }                                                                   \
 } while (0)
@@ -938,5 +1051,6 @@ _JAVA_CLASSFILE_GENERATE_FUNCTION(CONSTANT_InterfaceMethodref_info)
 _JAVA_CLASSFILE_GENERATE_FUNCTION(CONSTANT_Module_info)
 _JAVA_CLASSFILE_GENERATE_FUNCTION(CONSTANT_Package_info)
 _JAVA_CLASSFILE_GENERATE_FUNCTION(cp_info)
+_JAVA_CLASSFILE_GENERATE_FUNCTION(attribute_info)
 _JAVA_CLASSFILE_GENERATE_FUNCTION(field_info)
 _JAVA_CLASSFILE_GENERATE_FUNCTION(ClassFile)

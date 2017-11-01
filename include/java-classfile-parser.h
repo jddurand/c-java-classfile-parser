@@ -35,6 +35,12 @@ extern "C" {
   java_classfile_parser_EXPORT void                                                      java_classfile_parser_ClassFile_freev(java_classfile_parser_ClassFile_t *p);
   java_classfile_parser_EXPORT java_classfile_parser_cp_info_t                          *java_classfile_parser_cp_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
   java_classfile_parser_EXPORT void                                                      java_classfile_parser_cp_info_freev(java_classfile_parser_cp_info_t *p);
+  java_classfile_parser_EXPORT java_classfile_parser_field_info_t                       *java_classfile_parser_field_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
+  java_classfile_parser_EXPORT void                                                      java_classfile_parser_field_info_freev(java_classfile_parser_field_info_t *p);
+  java_classfile_parser_EXPORT java_classfile_parser_method_info_t                      *java_classfile_parser_method_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
+  java_classfile_parser_EXPORT void                                                      java_classfile_parser_method_info_freev(java_classfile_parser_method_info_t *p);
+  java_classfile_parser_EXPORT java_classfile_parser_attribute_info_t                   *java_classfile_parser_attribute_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
+  java_classfile_parser_EXPORT void                                                      java_classfile_parser_attribute_info_freev(java_classfile_parser_attribute_info_t *p);
   java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Class_info_t              *java_classfile_parser_CONSTANT_Class_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
   java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Class_info_freev(java_classfile_parser_CONSTANT_Class_info_t *p);
   java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Fieldref_info_t           *java_classfile_parser_CONSTANT_Fieldref_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
