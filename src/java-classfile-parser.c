@@ -9,14 +9,16 @@ static const int _java_classfile_parse_bigendian = 1;
 # ifdef JAVA_CLASSFILE_PARSER_LOGGER
 #   define __JAVA_CLASSFILE_PARSER_TRACE_CHAR(u1, be1, bufferp, lengthl) ((u1 >= 0x20) && (u1 <= 0x7E)) ? JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]       0x%02x ->       0x%02x %s=%u '%c', remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned char) u1, (unsigned long) lengthl) : JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]       0x%02x ->       0x%02x %s=%u (not printable), remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl)
 #   define __JAVA_CLASSFILE_PARSER_TRACE_U1(u1, be1, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]       0x%02x ->       0x%02x %s=%u, remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(u1p, u1l, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U*]            ->            %s, remains %lu", bufferp - u1l, #u1p, (unsigned long) lengthl);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(u1p, u1l, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U1*]           ->            %s, remains %lu", bufferp - u1l, #u1p, (unsigned long) lengthl);
 #   define __JAVA_CLASSFILE_PARSER_TRACE_U2(u2, be2, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U2]     0x%04x ->     0x%04x %s=%u, remains %lu", bufferp - 2, (unsigned int) be2, (unsigned int) u22, #u2, (unsigned int) u2, (unsigned long) lengthl);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(u2p, u2l, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U2*]           ->            %s, remains %lu", bufferp - (u2l * 2), #u2p, (unsigned long) lengthl);
 #   define __JAVA_CLASSFILE_PARSER_TRACE_U4(u4, be4, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U4] 0x%08lx -> 0x%08lx%s=%lu, remains %lu", bufferp - 4, (unsigned long) be4, (unsigned long) u4, #u4, (unsigned long) u4, (unsigned long) lengthl);
 #  else
 #   define __JAVA_CLASSFILE_PARSER_TRACE_CHAR(u1, be1, bufferp, lengthl) ((u1 >= 0x20) && (u1 <= 0x7E)) ? fprintf(stderr, "%p[U1]       0x%02x ->       0x%02x %s=%u '%c', remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned char) u1, (unsigned long) lengthl) : fprintf(stderr, "%p[U1]       0x%02x ->       0x%02x %s=%u (not printable), remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl); fflush(stderr);
 #   define __JAVA_CLASSFILE_PARSER_TRACE_U1(u1, be1, bufferp, lengthl) fprintf(stderr, "%p[U1]       0x%02x ->       0x%02x %s=%u, remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(u1p, u1l, bufferp, lengthl) fprintf(stderr, "%p[U*]            ->            %s, remains %lu\n", bufferp - u1l, #u1p, (unsigned long) lengthl); fflush(stderr);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(u1p, u1l, bufferp, lengthl) fprintf(stderr, "%p[U1*]           ->            %s, remains %lu\n", bufferp - u1l, #u1p, (unsigned long) lengthl); fflush(stderr);
 #   define __JAVA_CLASSFILE_PARSER_TRACE_U2(u2, be2, bufferp, lengthl) fprintf(stderr, "%p[U2]     0x%04x ->     0x%04x %s=%u, remains %lu\n", bufferp - 2, (unsigned int) be2, (unsigned int) u2, #u2, (unsigned int) u2, (unsigned long) lengthl); fflush(stderr);
+#   define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(u2p, u2l, bufferp, lengthl) fprintf(stderr, "%p[U2*]           ->            %s, remains %lu\n", bufferp - (u2l * 2), #u2p, (unsigned long) lengthl); fflush(stderr);
 #   define __JAVA_CLASSFILE_PARSER_TRACE_U4(u4, be4, bufferp, lengthl) fprintf(stderr, "%p[U4] 0x%08lx -> 0x%08lx %s=%lu, remains %lu\n", bufferp - 4, (unsigned long) be4, (unsigned long) u4, #u4, (unsigned long) u4, (unsigned long) lengthl); fflush(stderr);
 #   define __JAVA_CLASSFILE_PARSER_TRACE(msgs) fprintf(stderr, msgs "\n")
 #   define __JAVA_CLASSFILE_PARSER_TRACEF(fmts, msgs, ...) fprintf(stderr, fmts "\n", msgs, __VA_ARGS__)
@@ -25,6 +27,7 @@ static const int _java_classfile_parse_bigendian = 1;
 # define __JAVA_CLASSFILE_PARSER_TRACE_U1(u1, be1, bufferp, lengthl)
 # define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(u1p, u1l, bufferp, lengthl)
 # define __JAVA_CLASSFILE_PARSER_TRACE_U2(u2, be2, bufferp, lengthl)
+# define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(u2p, u2l, bufferp, lengthl)
 # define __JAVA_CLASSFILE_PARSER_TRACE_U4(u4, be4, bufferp, lengthl)
 # define __JAVA_CLASSFILE_PARSER_TRACE(msgs)
 # define __JAVA_CLASSFILE_PARSER_TRACEF(fmts, msgs)
@@ -81,8 +84,8 @@ static const int _java_classfile_parse_bigendian = 1;
           errno = _save_errno;                                          \
           return NULL;                                                  \
         }                                                               \
-        memcpy(_p, bufferp, _arrayl);                                   \
         onstack.arrayp = _p;                                            \
+        memcpy(_p, bufferp, _arrayl);                                   \
         bufferp += _arrayl;                                             \
         lengthl -= _arrayl;                                             \
         __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(onstack.arrayp, onstack.arrayl, bufferp, lengthl) \
@@ -120,6 +123,102 @@ static const int _java_classfile_parse_bigendian = 1;
     return NULL;                                                        \
   }
 
+/* Notes: counters are always stored in an u2 as per the spec */
+#define _JAVA_CLASSFILE_PARSER_U2_ARRAY_BE(type, onstack, arrayp, arrayl, bufferp, lengthl) \
+  {                                                                     \
+    size_t _arrayl = onstack.arrayl;                                    \
+    size_t _arrayu1l = _arrayl * 2;                                     \
+                                                                        \
+    if (_arrayu1l > 0) {                                                \
+      if (lengthl >= _arrayu1l) {                                       \
+        java_classfile_parser_u2_t *_p;                                 \
+                                                                        \
+        _p = (java_classfile_parser_u2_t *) malloc(_arrayl * sizeof(java_classfile_parser_u2_t)); \
+        if (_p == NULL) {                                               \
+          int _save_errno = errno;                                      \
+          __JAVA_CLASSFILE_PARSER_FREEV(type, onstack);                 \
+          errno = _save_errno;                                          \
+          return NULL;                                                  \
+        }                                                               \
+        onstack.arrayp = _p;                                            \
+        if (sizeof(java_classfile_parser_u2_t) == 2) {                  \
+          memcpy(_p, bufferp, _arrayu1l);                               \
+          bufferp += _arrayu1l;                                         \
+        } else {                                                        \
+          java_classfile_parser_u1_t _u1[2];                            \
+          java_classfile_parser_u2_t _i;                                \
+                                                                        \
+          for (_i = 0; _i < _arrayl; _i++) {                            \
+            _u1[0] = *bufferp++;                                        \
+            _u1[1] = *bufferp++;                                        \
+            *_p = _u1[0];                                               \
+            *_p <<= 8;                                                  \
+            *_p++ |= _u1[1];                                            \
+          }                                                             \
+        }                                                               \
+        lengthl -= _arrayu1l;                                           \
+        __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(onstack.arrayp, onstack.arrayl, bufferp, lengthl) \
+      } else {                                                          \
+          __JAVA_CLASSFILE_PARSER_FREEV(type, onstack);                 \
+          errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                     \
+        return NULL;                                                    \
+      }                                                                 \
+    } else {                                                            \
+      onstack.arrayp = NULL;                                            \
+    }                                                                   \
+  }
+
+#define _JAVA_CLASSFILE_PARSER_U2_ARRAY_LE(type, onstack, arrayp, arrayl, bufferp, lengthl) \
+  {                                                                     \
+    size_t _arrayl = onstack.arrayl;                                    \
+    size_t _arrayu1l = _arrayl * 2;                                     \
+                                                                        \
+    if (_arrayu1l > 0) {                                                \
+      if (lengthl >= _arrayu1l) {                                       \
+        java_classfile_parser_u2_t *_p;                                 \
+                                                                        \
+        _p = (java_classfile_parser_u2_t *) malloc(_arrayl * sizeof(java_classfile_parser_u2_t)); \
+        if (_p == NULL) {                                               \
+          int _save_errno = errno;                                      \
+          __JAVA_CLASSFILE_PARSER_FREEV(type, onstack);                 \
+          errno = _save_errno;                                          \
+          return NULL;                                                  \
+        }                                                               \
+        onstack.arrayp = _p;                                            \
+        if (sizeof(java_classfile_parser_u2_t) == 2) {                  \
+          java_classfile_parser_u2_t _i;                                \
+                                                                        \
+          memcpy(_p, bufferp, _arrayu1l);                               \
+                                                                        \
+          for (_i = 0; _i < _arrayl; _i++, _p++) {                      \
+            *_p = __JAVA_CLASSFILE_PARSER_NTOHS_LE(*_p);                \
+          }                                                             \
+          bufferp += _arrayu1l;                                         \
+        } else {                                                        \
+          java_classfile_parser_u1_t _u1[2];                            \
+          java_classfile_parser_u2_t _i;                                \
+                                                                        \
+          for (_i = 0; _i < _arrayl; _i++, _p++) {                      \
+            _u1[0] = *bufferp++;                                        \
+            _u1[1] = *bufferp++;                                        \
+            *_p = _u1[0];                                               \
+            *_p <<= 8;                                                  \
+            *_p |= _u1[1];                                              \
+            *_p = __JAVA_CLASSFILE_PARSER_NTOHS_LE(*_p);                \
+          }                                                             \
+        }                                                               \
+        lengthl -= _arrayu1l;                                           \
+        __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(onstack.arrayp, onstack.arrayl, bufferp, lengthl) \
+      } else {                                                          \
+          __JAVA_CLASSFILE_PARSER_FREEV(type, onstack);                 \
+          errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                     \
+        return NULL;                                                    \
+      }                                                                 \
+    } else {                                                            \
+      onstack.arrayp = NULL;                                            \
+    }                                                                   \
+  }
+
 #define _JAVA_CLASSFILE_PARSER_U2_LE(type, onstack, u2, bufferp, lengthl) \
   if (lengthl >= 2) {                                                   \
     java_classfile_parser_u2_t _u2;                                     \
@@ -145,6 +244,7 @@ static const int _java_classfile_parse_bigendian = 1;
   }
 
 #define _JAVA_CLASSFILE_PARSER_U2(type, onstack, endianness, u2, bufferp, lengthl) _JAVA_CLASSFILE_PARSER_U2_##endianness(type, onstack, u2, bufferp, lengthl) 
+#define _JAVA_CLASSFILE_PARSER_U2_ARRAY(type, onstack, endianness, arrayp, arrayl, bufferp, lengthl) _JAVA_CLASSFILE_PARSER_U2_ARRAY_##endianness(type, onstack, arrayp, arrayl, bufferp, lengthl) 
 
 /* The compiler will automatically optimize the test on sizeof() */
 /* Indeed nothing guarantees that our sizeof(u4) == 4 * sizeof(u1) */
@@ -257,14 +357,8 @@ static const int _java_classfile_parse_bigendian = 1;
     _JAVA_CLASSFILE_PARSER_U2(ClassFile, onstack, endianness, this_class, bufferp, lengthl); \
     _JAVA_CLASSFILE_PARSER_U2(ClassFile, onstack, endianness, super_class, bufferp, lengthl); \
     _JAVA_CLASSFILE_PARSER_U2(ClassFile, onstack, endianness, interfaces_count, bufferp, lengthl); \
-    if (onstack.interfaces_count > 0) {                                 \
-      java_classfile_parser_u2_t _max = onstack.interfaces_count;       \
-      onstack.interfacesp = (java_classfile_parser_u2_t *) malloc(_max * sizeof(java_classfile_parser_u2_t)); \
-      if (onstack.interfacesp == NULL) {                                \
-        __JAVA_CLASSFILE_PARSER_FREEV(ClassFile, onstack);              \
-        return NULL;                                                    \
-      }                                                                 \
-    }                                                                   \
+    _JAVA_CLASSFILE_PARSER_U2_ARRAY(ClassFile, onstack, endianness, interfacesp, interfaces_count, bufferp, lengthl); \
+    _JAVA_CLASSFILE_PARSER_U2(ClassFile, onstack, endianness, fields_count, bufferp, lengthl); \
   } while (0)
 
 #define __JAVA_CLASSFILE_PARSER_ClassFile_freev(p)                      \
