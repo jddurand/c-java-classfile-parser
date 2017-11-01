@@ -1,5 +1,5 @@
-#include "java-classfile-parser/internal/config.h"
-#include <java-classfile-parser.h>
+#include "java_classfile_parser/internal/config.h"
+#include <java_classfile_parser.h>
 
 int main(int argc, char **argv) {
   int         fd = -1;
@@ -35,12 +35,12 @@ int main(int argc, char **argv) {
 
   bytep = (char *) malloc(bytel);
   if (bytep == NULL) {
-    fprintf(stderr, "malloc(%ud) failure, %s\n", (unsigned long) bytel, strerror(errno));
+    fprintf(stderr, "malloc(%lu) failure, %s\n", (unsigned long) bytel, strerror(errno));
     goto err;
   }
 
   if (read(fd, bytep, bytel) != bytel) {
-    fprintf(stderr, "read of %ud bytes failure, %s\n", (unsigned long) bytel, strerror(errno));
+    fprintf(stderr, "read of %lu bytes failure, %s\n", (unsigned long) bytel, strerror(errno));
     goto err;
   }
 

@@ -2,8 +2,8 @@
 #define JAVA_CLASSFILE_PARSER_H
 
 #include <stddef.h> /* For size_t */
-#include <java-classfile-parser/export.h>
-#include <java-classfile-parser/structures.h>
+#include <java_classfile_parser/export.h>
+#include <java_classfile_parser/structures.h>
 
 typedef enum _java_classfile_parser_cp_info_e {
   JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class              =  7,

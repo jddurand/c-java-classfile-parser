@@ -7,17 +7,17 @@ MYPACKAGESTART (java_classfile_parser 1 0 0)
 
 MYPACKAGELIBRARY(
   ${CMAKE_CURRENT_SOURCE_DIR}/include/config.h.in
-  ${INCLUDE_OUTPUT_PATH}/java-classfile-parser/internal/config.h
-  src/java-classfile-parser.c)
+  ${INCLUDE_OUTPUT_PATH}/java_classfile_parser/internal/config.h
+  src/java_classfile_parser.c)
 
 ################
 # Executables  #
 ################
-MYPACKAGEEXECUTABLE(javaClassFileParserExe bin/java-classfile-parser.c)
+MYPACKAGEEXECUTABLE(javaClassFileParserExe bin/java_classfile_parser.c)
 FOREACH (_target javaClassFileParserExe javaClassFileParserExe_static)
   IF (${_target} STREQUAL "javaClassFileParserExe")
-    SET_TARGET_PROPERTIES(${_target} PROPERTIES OUTPUT_NAME javap-classfile-parser)
+    SET_TARGET_PROPERTIES(${_target} PROPERTIES OUTPUT_NAME javap_classfile_parser)
   ELSE ()
-    SET_TARGET_PROPERTIES(${_target} PROPERTIES OUTPUT_NAME javap-classfile-parser_static)
+    SET_TARGET_PROPERTIES(${_target} PROPERTIES OUTPUT_NAME javap_classfile_parser_static)
   ENDIF ()
 ENDFOREACH ()

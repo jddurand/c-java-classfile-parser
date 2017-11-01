@@ -1,5 +1,5 @@
-#include "java-classfile-parser/internal/config.h"
-#include <java-classfile-parser.h>
+#include "java_classfile_parser/internal/config.h"
+#include <java_classfile_parser.h>
 
 /* C.f. https://www.ibm.com/developerworks/aix/library/au-endianc/ */
 static const int _java_classfile_parse_bigendian = 1;
@@ -344,7 +344,7 @@ static const int _java_classfile_parse_bigendian = 1;
           java_classfile_parser_u2_t _j;                                \
                                                                         \
           for (_j = _i+1; _j < _max; _j++) {                            \
-            onstack.constant_poolpp[_j] == NULL;                        \
+            onstack.constant_poolpp[_j] = NULL;                         \
           }                                                             \
           __JAVA_CLASSFILE_PARSER_FREEV(ClassFile, onstack);            \
           return NULL;                                                  \
@@ -383,7 +383,7 @@ static const int _java_classfile_parse_bigendian = 1;
           java_classfile_parser_u2_t _j;                                \
                                                                         \
           for (_j = _i+1; _j < _max; _j++) {                            \
-            onstack.fieldspp[_j] == NULL;                               \
+            onstack.fieldspp[_j] = NULL;                                \
           }                                                             \
           __JAVA_CLASSFILE_PARSER_FREEV(ClassFile, onstack);            \
           return NULL;                                                  \
@@ -645,7 +645,7 @@ static const int _java_classfile_parse_bigendian = 1;
           java_classfile_parser_u2_t _j;                                \
                                                                         \
           for (_j = _i+1; _j < _max; _j++) {                            \
-            onstack.attributespp[_j] == NULL;                               \
+            onstack.attributespp[_j] = NULL;                            \
           }                                                             \
           __JAVA_CLASSFILE_PARSER_FREEV(field_info, onstack);           \
           return NULL;                                                  \

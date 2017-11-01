@@ -1,7 +1,7 @@
 #ifndef JAVA_CLASSFILE_PARSER_STRUCTURES_H
 #define JAVA_CLASSFILE_PARSER_STRUCTURES_H
 
-#include <java-classfile-parser/ux.h>
+#include <java_classfile_parser/ux.h>
 
 typedef struct java_classfile_parser_ClassFile                        java_classfile_parser_ClassFile_t;
 typedef struct java_classfile_parser_cp_info                          java_classfile_parser_cp_info_t;
