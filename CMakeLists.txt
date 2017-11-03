@@ -11,6 +11,13 @@ MYPACKAGELIBRARY(
   src/java_classfile_parser.c)
 
 ################
+# For CHAR_BIT #
+################
+CHECK_INCLUDE_FILE ("limits.h" HAVE_LIMITS_H)
+CHECK_INCLUDE_FILE ("arpa/inet.h" HAVE_ARPA_INET_H)
+CHECK_INCLUDE_FILE ("netinet/in.h" HAVE_NETINET_IN_H)
+
+################
 # Executables  #
 ################
 MYPACKAGEEXECUTABLE(javaClassFileParserExe bin/java_classfile_parser.c)

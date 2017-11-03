@@ -2,8 +2,19 @@
 #include <java_classfile_parser.h>
 
 /* C.f. https://www.ibm.com/developerworks/aix/library/au-endianc/ */
+/* Though systems have predefined macros */
+#if defined(__BYTE_ORDER) && defined(__BIG_ENDIAN)
+#define _JAVA_CLASSFILE_PARSER_SYSTEM_IS_BIGENDIAN() (__BYTE_ORDER == __BIG_ENDIAN)
+#elif defined(__BIG_ENDIAN__) || defined(_ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIPSEB) || defined(__MIPSEB) || defined(__MIPSEB__)
+#define _JAVA_CLASSFILE_PARSER_SYSTEM_IS_BIGENDIAN() 1
+#elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__)
+#define _JAVA_CLASSFILE_PARSER_SYSTEM_IS_BIGENDIAN() (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+#elif defined(__FLOAT_WORD_ORDER__) && defined(__ORDER_BIG_ENDIAN__)
+#define _JAVA_CLASSFILE_PARSER_SYSTEM_IS_BIGENDIAN() (__FLOAT_WORD_ORDER__ == __ORDER_BIG_ENDIAN__)
+#else
 static const int _java_classfile_parse_bigendian = 1;
 #define _JAVA_CLASSFILE_PARSER_SYSTEM_IS_BIGENDIAN() ( (*(char*)&_java_classfile_parse_bigendian) == 0 )
+#endif
 
 #ifndef JAVA_CLASSFILE_PARSER_NTRACE
 # ifdef JAVA_CLASSFILE_PARSER_LOGGER
@@ -35,13 +46,24 @@ static const int _java_classfile_parse_bigendian = 1;
 
 /* These macros are executed only when current binary is low endian */
 /* We do NOT use ntohs and al. because there is no guarantee that our sizeof(u2) is 2*sizeof(u1) etc. */
+/* Nevertheless we have macros thanks for cmake to know in advance the result. */
+/* System's ntohs is very likely to be more performant, using bswap etc. */
+/* In optimized mode, ntohs is usually a macro. In debug mode, it may be a function -; */
+#if defined(ntohs) && defined(CHAR_BIT) && (CHAR_BIT == 8) && defined(SIZEOF_UNSIGNED_SHORT) && (SIZEOF_UNSIGNED_SHORT == 2)
+#define __JAVA_CLASSFILE_PARSER_NTOHS_LE(scope, n) ntohs(n)
+#else
 #define __JAVA_CLASSFILE_PARSER_NTOHS_LE(scope, n) (((((java_classfile_parser_u2_t)(n) & 0x00FF)) << 8) | \
                                                     ((((java_classfile_parser_u2_t)(n) & 0xFF00)) >> 8))
+#endif
 
+#if defined(ntohl) && defined(CHAR_BIT) && (CHAR_BIT == 8) && defined(SIZEOF_UNSIGNED_LONG) && (SIZEOF_UNSIGNED_LONG == 4)
+#define __JAVA_CLASSFILE_PARSER_NTOHL_LE(scope, n) ntohl(n)
+#else
 #define __JAVA_CLASSFILE_PARSER_NTOHL_LE(scope, n) (((((java_classfile_parser_u4_t)(n) & 0x000000FF)) << 24) | \
                                                     ((((java_classfile_parser_u4_t)(n) & 0x0000FF00)) << 8)  | \
                                                     ((((java_classfile_parser_u4_t)(n) & 0x00FF0000)) >> 8)  | \
                                                     ((((java_classfile_parser_u4_t)(n) & 0xFF000000)) >> 24))
+#endif
 
 /* Internal variables of every macro must be unique per macro AND per macro call in case of recursivity */
 /* This is why there is always an internal first parameter to every macro with name "scope". */
