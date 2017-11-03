@@ -1,5 +1,5 @@
-#include "java_classfile_parser/internal/config.h"
 #include <java_classfile_parser.h>
+#include "java_classfile_parser/internal/config.h"
 
 int main(int argc, char **argv) {
   int         fd = -1;

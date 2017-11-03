@@ -1,75 +1,14 @@
-#include "java_classfile_parser/internal/config.h"
 #include <java_classfile_parser.h>
-
-/* C.f. https://www.ibm.com/developerworks/aix/library/au-endianc/ */
-/* Though systems have predefined macros */
-#if defined(__BYTE_ORDER) && defined(__BIG_ENDIAN)
-#define _JAVA_CLASSFILE_PARSER_SYSTEM_IS_BIGENDIAN() (__BYTE_ORDER == __BIG_ENDIAN)
-#elif defined(__BIG_ENDIAN__) || defined(_ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIPSEB) || defined(__MIPSEB) || defined(__MIPSEB__)
-#define _JAVA_CLASSFILE_PARSER_SYSTEM_IS_BIGENDIAN() 1
-#elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__)
-#define _JAVA_CLASSFILE_PARSER_SYSTEM_IS_BIGENDIAN() (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-#elif defined(__FLOAT_WORD_ORDER__) && defined(__ORDER_BIG_ENDIAN__)
-#define _JAVA_CLASSFILE_PARSER_SYSTEM_IS_BIGENDIAN() (__FLOAT_WORD_ORDER__ == __ORDER_BIG_ENDIAN__)
-#else
-static const int _java_classfile_parse_bigendian = 1;
-#define _JAVA_CLASSFILE_PARSER_SYSTEM_IS_BIGENDIAN() ( (*(char*)&_java_classfile_parse_bigendian) == 0 )
-#endif
-
-#ifndef JAVA_CLASSFILE_PARSER_NTRACE
-# ifdef JAVA_CLASSFILE_PARSER_LOGGER
-#   define __JAVA_CLASSFILE_PARSER_TRACE_CHAR(scope, u1, be1, bufferp, lengthl) ((u1 >= 0x20) && (u1 <= 0x7E)) ? JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]        0x%02x ->       0x%02x %*s%s=%u '%c', remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, (int) strlen(#scope), ".", #u1, (unsigned int) u1, (unsigned char) u1, (unsigned long) lengthl) : JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]        0x%02x ->       0x%02x %s=%u (not printable), remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U1(scope, u1, be1, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U1]        0x%02x ->       0x%02x %*s%s=%u, remains %lu", bufferp - 1, (unsigned int) be1, (unsigned int) u1, (int) strlen(#scope), ".", #u1, (unsigned int) u1, (unsigned long) lengthl);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(scope, u1p, u1l, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U1*]            ->            %*s%s=0%lx, remains %lu", bufferp - u1l, (int) strlen(#scope), ".", #u1p, (unsigned long) u1p, (unsigned long) lengthl);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U2(scope, u2, be2, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U2]      0x%04x ->     0x%04x %*s%s=%u, remains %lu", bufferp - 2, (unsigned int) be2, (unsigned int) u22, (int) strlen(#scope), ".", #u2, (unsigned int) u2, (unsigned long) lengthl);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(scope, u2p, u2l, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U2*]            ->            %*s%s=0%lx, remains %lu", bufferp - (u2l * 2), (int) strlen(#scope), ".", #u2p, (unsigned long) u2p, (unsigned long) lengthl);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U4(scope, u4, be4, bufferp, lengthl) JAVA_CLASSFILE_PARSER_LOGGER("%p[U4]  0x%08lx -> 0x%08lx %*s%s=%lu, remains %lu", bufferp - 4, (unsigned long) be4, (unsigned long) u4, (int) strlen(#scope), ".", #u4, (unsigned long) u4, (unsigned long) lengthl);
-#  else
-#   define __JAVA_CLASSFILE_PARSER_TRACE_CHAR(scope, u1, be1, bufferp, lengthl) ((u1 >= 0x20) && (u1 <= 0x7E)) ? fprintf(stderr, "%p[U1]        0x%02x ->       0x%02x %*s%s=%u '%c', remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, (int) strlen(#scope), ".", #u1, (unsigned int) u1, (unsigned char) u1, (unsigned long) lengthl) : fprintf(stderr, "%p[U1]        0x%02x ->       0x%02x %s=%u (not printable), remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, #u1, (unsigned int) u1, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U1(scope, u1, be1, bufferp, lengthl) fprintf(stderr, "%p[U1]        0x%02x ->       0x%02x %*s%s=%u, remains %lu\n", bufferp - 1, (unsigned int) be1, (unsigned int) u1, (int) strlen(#scope), ".", #u1, (unsigned int) u1, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(scope, u1p, u1l, bufferp, lengthl) fprintf(stderr, "%p[U1*]            ->            %*s%s=0x%lx, remains %lu\n", bufferp - u1l, (int) strlen(#scope), ".", #u1p, (unsigned long) u1p, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U2(scope, u2, be2, bufferp, lengthl) fprintf(stderr, "%p[U2]      0x%04x ->     0x%04x %*s%s=%u, remains %lu\n", bufferp - 2, (unsigned int) be2, (unsigned int) u2, (int) strlen(#scope), ".", #u2, (unsigned int) u2, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(scope, u2p, u2l, bufferp, lengthl) fprintf(stderr, "%p[U2*]            ->            %*s%s=0%lx, remains %lu\n", bufferp - (u2l * 2), (int) strlen(#scope), ".", #u2p, (unsigned long) u2p, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE_U4(scope, u4, be4, bufferp, lengthl) fprintf(stderr, "%p[U4]  0x%08lx -> 0x%08lx %*s%s=%lu, remains %lu\n", bufferp - 4, (unsigned long) be4, (unsigned long) u4, (int) strlen(#scope), ".", #u4, (unsigned long) u4, (unsigned long) lengthl); fflush(stderr);
-#   define __JAVA_CLASSFILE_PARSER_TRACE(scope, msgs) fprintf(stderr, msgs "\n");
-#   define __JAVA_CLASSFILE_PARSER_TRACEF(scope, fmts, ...) fprintf(stderr, fmts "\n", __VA_ARGS__);
-#  endif
-#else
-# define __JAVA_CLASSFILE_PARSER_TRACE_U1(scope, u1, be1, bufferp, lengthl)
-# define __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(scope, u1p, u1l, bufferp, lengthl)
-# define __JAVA_CLASSFILE_PARSER_TRACE_U2(scope, u2, be2, bufferp, lengthl)
-# define __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(scope, u2p, u2l, bufferp, lengthl)
-# define __JAVA_CLASSFILE_PARSER_TRACE_U4(scope, u4, be4, bufferp, lengthl)
-# define __JAVA_CLASSFILE_PARSER_TRACE(scope, msgs)
-# define __JAVA_CLASSFILE_PARSER_TRACEF(scope, fmts, ...)
-#endif
-
-/* These macros are executed only when current binary is low endian */
-/* We do NOT use ntohs and al. because there is no guarantee that our sizeof(u2) is 2*sizeof(u1) etc. */
-/* Nevertheless we have macros thanks for cmake to know in advance the result. */
-/* System's ntohs is very likely to be more performant, using bswap etc. */
-/* In optimized mode, ntohs is usually a macro. In debug mode, it may be a function -; */
-#if defined(ntohs) && defined(CHAR_BIT) && (CHAR_BIT == 8) && defined(SIZEOF_UNSIGNED_SHORT) && (SIZEOF_UNSIGNED_SHORT == 2)
-#define __JAVA_CLASSFILE_PARSER_NTOHS_LE(scope, n) ntohs(n)
-#else
-#define __JAVA_CLASSFILE_PARSER_NTOHS_LE(scope, n) (((((java_classfile_parser_u2_t)(n) & 0x00FF)) << 8) | \
-                                                    ((((java_classfile_parser_u2_t)(n) & 0xFF00)) >> 8))
-#endif
-
-#if defined(ntohl) && defined(CHAR_BIT) && (CHAR_BIT == 8) && defined(SIZEOF_UNSIGNED_LONG) && (SIZEOF_UNSIGNED_LONG == 4)
-#define __JAVA_CLASSFILE_PARSER_NTOHL_LE(scope, n) ntohl(n)
-#else
-#define __JAVA_CLASSFILE_PARSER_NTOHL_LE(scope, n) (((((java_classfile_parser_u4_t)(n) & 0x000000FF)) << 24) | \
-                                                    ((((java_classfile_parser_u4_t)(n) & 0x0000FF00)) << 8)  | \
-                                                    ((((java_classfile_parser_u4_t)(n) & 0x00FF0000)) >> 8)  | \
-                                                    ((((java_classfile_parser_u4_t)(n) & 0xFF000000)) >> 24))
-#endif
+#include "java_classfile_parser/internal/config.h"
+#include "java_classfile_parser/internal/endian.h"
+#include "java_classfile_parser/internal/trace.h"
+#include "java_classfile_parser/internal/ntohx.h"
 
 /* Internal variables of every macro must be unique per macro AND per macro call in case of recursivity */
 /* This is why there is always an internal first parameter to every macro with name "scope". */
 /* An underscore is prepended to "scope" at every call to any macro */
 
-#define __JAVA_CLASSFILE_PARSER_FREEV(scope, type, onstack)             \
+#define __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(scope, type, onstack)             \
   java_classfile_parser_##type##_t *_##scope##tofreep = &(onstack);     \
   __JAVA_CLASSFILE_PARSER_##type##_freev(_##scope, _##scope##tofreep)
 
@@ -79,7 +18,7 @@ static const int _java_classfile_parse_bigendian = 1;
     onstack.u1 = (java_classfile_parser_u1_t) *bufferp++;               \
     __JAVA_CLASSFILE_PARSER_TRACE_CHAR(_##scope, onstack.u1, onstack.u1, bufferp, lengthl) \
   } else {                                                              \
-    __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);           \
+    __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);           \
     errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                           \
     return NULL;                                                        \
   }
@@ -90,7 +29,7 @@ static const int _java_classfile_parse_bigendian = 1;
     onstack.u1 = (java_classfile_parser_u1_t) *bufferp++;               \
     __JAVA_CLASSFILE_PARSER_TRACE_U1(_##scope, onstack.u1, onstack.u1, bufferp, lengthl) \
   } else {                                                              \
-    __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);           \
+    __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);           \
     errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                           \
     return NULL;                                                        \
   }
@@ -106,7 +45,7 @@ static const int _java_classfile_parse_bigendian = 1;
         _##scope##p = (java_classfile_parser_u1_t *) malloc(_##scope##arrayl); \
         if (_##scope##p == NULL) {                                      \
           int _##scope##save_errno = errno;                             \
-          __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);       \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);       \
           errno = _##scope##save_errno;                                 \
           return NULL;                                                  \
         }                                                               \
@@ -116,7 +55,7 @@ static const int _java_classfile_parse_bigendian = 1;
         lengthl -= _##scope##arrayl;                                    \
         __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(_##scope, onstack.arrayp, onstack.arrayl, bufferp, lengthl) \
       } else {                                                          \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);         \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);         \
         errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                       \
         return NULL;                                                    \
       }                                                                 \
@@ -144,7 +83,7 @@ static const int _java_classfile_parse_bigendian = 1;
     lengthl -= 2;                                                       \
     __JAVA_CLASSFILE_PARSER_TRACE_U2(_##scope, onstack.u2, onstack.u2, bufferp, lengthl) \
   } else {                                                              \
-    __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);           \
+    __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);           \
     errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                           \
     return NULL;                                                        \
   }
@@ -162,7 +101,7 @@ static const int _java_classfile_parse_bigendian = 1;
         _##scope##p = (java_classfile_parser_u2_t *) malloc(_##scope##arrayl * sizeof(java_classfile_parser_u2_t)); \
         if (_##scope##p == NULL) {                                      \
           int _##scope##save_errno = errno;                             \
-          __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);       \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);       \
           errno = _##scope##save_errno;                                 \
           return NULL;                                                  \
         }                                                               \
@@ -185,7 +124,7 @@ static const int _java_classfile_parse_bigendian = 1;
         lengthl -= _##scope##arrayu1l;                                  \
         __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(_##scope, onstack.arrayp, onstack.arrayl, bufferp, lengthl) \
       } else {                                                          \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);       \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);       \
         errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                       \
         return NULL;                                                    \
       }                                                                 \
@@ -206,7 +145,7 @@ static const int _java_classfile_parse_bigendian = 1;
         _##scope##p = (java_classfile_parser_u2_t *) malloc(_##scope##arrayl * sizeof(java_classfile_parser_u2_t)); \
         if (_##scope##p == NULL) {                                      \
           int _##scope##save_errno = errno;                             \
-          __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);     \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);     \
           errno = _##scope##save_errno;                                 \
           return NULL;                                                  \
         }                                                               \
@@ -236,7 +175,7 @@ static const int _java_classfile_parse_bigendian = 1;
         lengthl -= _##scope##arrayu1l;                                  \
         __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(_##scope, onstack.arrayp, onstack.arrayl, bufferp, lengthl) \
       } else {                                                          \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);       \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);       \
           errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                     \
         return NULL;                                                    \
       }                                                                 \
@@ -264,7 +203,7 @@ static const int _java_classfile_parse_bigendian = 1;
     onstack.u2 = __JAVA_CLASSFILE_PARSER_NTOHS_LE(_##scope, _##scope##u2);     \
     __JAVA_CLASSFILE_PARSER_TRACE_U2(_##scope, onstack.u2, _##scope##u2, bufferp, lengthl) \
   } else {                                                              \
-    __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);           \
+    __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);           \
     errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                           \
     return NULL;                                                        \
   }
@@ -298,7 +237,7 @@ static const int _java_classfile_parse_bigendian = 1;
     lengthl -= 4;                                                       \
     __JAVA_CLASSFILE_PARSER_TRACE_U4(_##scope, onstack.u4, onstack.u4, bufferp, lengthl) \
   } else {                                                              \
-    __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);             \
+    __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);             \
     errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                           \
     return NULL;                                                        \
   }
@@ -329,7 +268,7 @@ static const int _java_classfile_parse_bigendian = 1;
     onstack.u4 = __JAVA_CLASSFILE_PARSER_NTOHL_LE(_##scope, _##scope##u4); \
     __JAVA_CLASSFILE_PARSER_TRACE_U4(_##scope, onstack.u4, _##scope##u4, bufferp, lengthl) \
   } else {                                                              \
-    __JAVA_CLASSFILE_PARSER_FREEV(_##scope, type, onstack);             \
+    __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);             \
     errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                           \
     return NULL;                                                        \
   }
@@ -359,7 +298,7 @@ static const int _java_classfile_parse_bigendian = 1;
                                                                         \
       onstack.constant_poolpp = (java_classfile_parser_cp_info_t **) malloc(_##scope##max * sizeof(java_classfile_parser_cp_info_t *)); \
       if (onstack.constant_poolpp == NULL) {                            \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, ClassFile, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       onstack.constant_pool_count = 1;                                  \
@@ -371,7 +310,7 @@ static const int _java_classfile_parse_bigendian = 1;
           for (_##scope##j = _##scope##i+1; _##scope##j < _##scope##max; _##scope##j++) { \
             onstack.constant_poolpp[_##scope##j] = NULL;                \
           }                                                             \
-          __JAVA_CLASSFILE_PARSER_FREEV(_##scope, ClassFile, onstack);  \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack);  \
           return NULL;                                                  \
         }                                                               \
         switch (onstack.constant_poolpp[_##scope##i]->tag) {            \
@@ -399,7 +338,7 @@ static const int _java_classfile_parse_bigendian = 1;
                                                                         \
       onstack.fieldspp = (java_classfile_parser_field_info_t **) malloc(_##scope##max * sizeof(java_classfile_parser_field_info_t *)); \
       if (onstack.fieldspp == NULL) {                                   \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, ClassFile, onstack);  \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack);  \
         return NULL;                                                    \
       }                                                                 \
       onstack.fields_count = 0;                                         \
@@ -411,7 +350,7 @@ static const int _java_classfile_parse_bigendian = 1;
           for (_##scope##j = _##scope##i + 1; _##scope##j < _##scope##max; _##scope##j++) { \
             onstack.fieldspp[_##scope##j] = NULL;                       \
           }                                                             \
-          __JAVA_CLASSFILE_PARSER_FREEV(_##scope, ClassFile, onstack); \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack); \
           return NULL;                                                  \
         }                                                               \
       }                                                                 \
@@ -455,118 +394,118 @@ static const int _java_classfile_parse_bigendian = 1;
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class:                  \
       onstack.u.classInfop = _java_classfile_parser_CONSTANT_Class_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.classInfop == NULL) {                               \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Fieldref:               \
       onstack.u.fieldrefInfop = _java_classfile_parser_CONSTANT_Fieldref_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.fieldrefInfop == NULL) {                            \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Methodref:              \
       onstack.u.methodrefInfop = _java_classfile_parser_CONSTANT_Methodref_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.methodrefInfop == NULL) {                           \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_InterfaceMethodref:     \
       onstack.u.interfaceMethodrefInfop = _java_classfile_parser_CONSTANT_InterfaceMethodref_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.interfaceMethodrefInfop == NULL) {                  \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_String:                 \
       onstack.u.stringInfop = _java_classfile_parser_CONSTANT_String_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.stringInfop == NULL) {                              \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Integer:                \
       onstack.u.integerInfop = _java_classfile_parser_CONSTANT_Integer_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.integerInfop == NULL) {                             \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Float:                  \
       onstack.u.floatInfop = _java_classfile_parser_CONSTANT_Float_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.floatInfop == NULL) {                               \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Long:                   \
       onstack.u.longInfop = _java_classfile_parser_CONSTANT_Long_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.longInfop == NULL) {                                \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Double:                 \
       onstack.u.doubleInfop = _java_classfile_parser_CONSTANT_Double_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.doubleInfop == NULL) {                              \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_NameAndType:            \
       onstack.u.nameAndTypeInfop = _java_classfile_parser_CONSTANT_NameAndType_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.nameAndTypeInfop == NULL) {                         \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Utf8:                   \
       onstack.u.utf8Infop = _java_classfile_parser_CONSTANT_Utf8_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.utf8Infop == NULL) {                                \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_MethodHandle:           \
       onstack.u.methodHandleInfop = _java_classfile_parser_CONSTANT_MethodHandle_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.methodHandleInfop == NULL) {                        \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_MethodType:             \
       onstack.u.methodTypeInfop = _java_classfile_parser_CONSTANT_MethodType_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.methodTypeInfop == NULL) {                          \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_InvokeDynamic:          \
       onstack.u.invokeDynamicInfop = _java_classfile_parser_CONSTANT_InvokeDynamic_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.invokeDynamicInfop == NULL) {                       \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Module:                 \
       onstack.u.moduleInfop = _java_classfile_parser_CONSTANT_Module_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.moduleInfop == NULL) {                              \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     case JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Package:                \
       onstack.u.packageInfop = _java_classfile_parser_CONSTANT_Package_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
       if (onstack.u.packageInfop == NULL) {                             \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);    \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);    \
         return NULL;                                                    \
       }                                                                 \
       break;                                                            \
     default:                                                            \
       errno = -1;                                                       \
-      __JAVA_CLASSFILE_PARSER_FREEV(_##scope, cp_info, onstack);      \
+      __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack);      \
       return NULL;                                                      \
     }                                                                   \
 } while (0)
@@ -646,7 +585,7 @@ static const int _java_classfile_parse_bigendian = 1;
                                                                         \
       onstack.attributespp = (java_classfile_parser_attribute_info_t **) malloc(_##scope##max * sizeof(java_classfile_parser_attribute_info_t *)); \
       if (onstack.attributespp == NULL) {                               \
-        __JAVA_CLASSFILE_PARSER_FREEV(_##scope, field_info, onstack); \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, field_info, onstack); \
         return NULL;                                                    \
       }                                                                 \
       onstack.attributes_count = 0;                                     \
@@ -658,7 +597,7 @@ static const int _java_classfile_parse_bigendian = 1;
           for (_##scope##j = _##scope##i + 1; _##scope##j < _##scope##max; _##scope##j++) { \
             onstack.attributespp[_##scope##j] = NULL;                   \
           }                                                             \
-          __JAVA_CLASSFILE_PARSER_FREEV(_##scope, field_info, onstack); \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, field_info, onstack); \
           return NULL;                                                  \
         }                                                               \
       }                                                                 \
