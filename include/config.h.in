@@ -14,21 +14,23 @@
 #  endif
 #endif
 
-#cmakedefine HAVE_STDIO_H      @HAVE_STDIO_H@
-#cmakedefine HAVE_STDLIB_H     @HAVE_STDLIB_H@
-#cmakedefine HAVE_STRING_H     @HAVE_STRING_H@
-#cmakedefine HAVE_ERRNO_H      @HAVE_ERRNO_H@
-#cmakedefine HAVE_SYS_TYPES_H  @HAVE_SYS_TYPES_H@
-#cmakedefine HAVE_SYS_STAT_H   @HAVE_SYS_STAT_H@
-#cmakedefine HAVE_FCNTL_H      @HAVE_FCNTL_H@
-#cmakedefine HAVE_UNISTD_H     @HAVE_UNISTD_H@
-#cmakedefine HAVE_STDINT_H     @HAVE_STDINT_H@
-#cmakedefine HAVE_STDDEF_H     @HAVE_STDDEF_H@
-#cmakedefine HAVE_LIMITS_H     @HAVE_LIMITS_H@
-#cmakedefine HAVE_ARPA_INET_H  @HAVE_ARPA_INET_H@
-#cmakedefine HAVE_NETINET_IN_H @HAVE_NETINET_IN_H@
+#cmakedefine HAVE_STDIO_H          @HAVE_STDIO_H@
+#cmakedefine HAVE_STDLIB_H         @HAVE_STDLIB_H@
+#cmakedefine HAVE_STRING_H         @HAVE_STRING_H@
+#cmakedefine HAVE_ERRNO_H          @HAVE_ERRNO_H@
+#cmakedefine HAVE_SYS_TYPES_H      @HAVE_SYS_TYPES_H@
+#cmakedefine HAVE_SYS_STAT_H       @HAVE_SYS_STAT_H@
+#cmakedefine HAVE_FCNTL_H          @HAVE_FCNTL_H@
+#cmakedefine HAVE_UNISTD_H         @HAVE_UNISTD_H@
+#cmakedefine HAVE_STDINT_H         @HAVE_STDINT_H@
+#cmakedefine HAVE_STDDEF_H         @HAVE_STDDEF_H@
+#cmakedefine HAVE_LIMITS_H         @HAVE_LIMITS_H@
+#cmakedefine HAVE_ARPA_INET_H      @HAVE_ARPA_INET_H@
+#cmakedefine HAVE_NETINET_IN_H     @HAVE_NETINET_IN_H@
+#cmakedefine HAVE_MACHINE_ENDIAN_H @HAVE_MACHINE_ENDIAN_H@
+#cmakedefine HAVE_SYS_ENDIAN_H     @HAVE_SYS_ENDIAN_H@
 #cmakedefine SIZEOF_UNSIGNED_SHORT @SIZEOF_UNSIGNED_SHORT@
-#cmakedefine SIZEOF_UNSIGNED_LONG @SIZEOF_UNSIGNED_LONG@
+#cmakedefine SIZEOF_UNSIGNED_LONG  @SIZEOF_UNSIGNED_LONG@
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -71,6 +73,12 @@
 #endif
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
+#ifdef HAVE_MACHINE_ENDIAN_H /* BSD, OSF */
+#include <machine/endian.h>
+#endif
+#ifdef HAVE_SYS_ENDIAN_H /* Android */
+#include <sys/endian.h>
 #endif
 
 #endif /* JAVA_CLASSFILE_PARSER_CONFIG_H */

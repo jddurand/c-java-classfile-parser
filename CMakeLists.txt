@@ -16,6 +16,8 @@ MYPACKAGELIBRARY(
 CHECK_INCLUDE_FILE ("limits.h" HAVE_LIMITS_H)
 CHECK_INCLUDE_FILE ("arpa/inet.h" HAVE_ARPA_INET_H)
 CHECK_INCLUDE_FILE ("netinet/in.h" HAVE_NETINET_IN_H)
+CHECK_INCLUDE_FILE ("machine/endian.h" HAVE_MACHINE_ENDIAN_H)
+CHECK_INCLUDE_FILE ("sys/endian.h" HAVE_SYS_ENDIAN_H)
 
 ################
 # Executables  #

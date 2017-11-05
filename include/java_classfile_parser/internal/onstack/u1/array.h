@@ -1,10 +1,7 @@
 #ifndef JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_U1_ARRAY_H
 #define JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_U1_ARRAY_H
 
-#include "java_classfile_parser/internal/onstack/free.h"
-
-#define _JAVA_CLASSFILE_PARSER_U1_ARRAY(scope, type, onstack, endianness, arrayp, arrayl, bufferp, lengthl) \
-  {                                                                     \
+#define _JAVA_CLASSFILE_PARSER_U1_ARRAY(scope, type, onstack, endianness, arrayp, arrayl, bufferp, lengthl) do { \
     size_t _##scope##arrayl = onstack.arrayl;                           \
                                                                         \
     if (_##scope##arrayl > 0) {                                         \
@@ -22,7 +19,7 @@
         memcpy(_##scope##p, bufferp, _##scope##arrayl);                 \
         bufferp += _##scope##arrayl;                                    \
         lengthl -= _##scope##arrayl;                                    \
-        __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(_##scope, onstack.arrayp, onstack.arrayl, bufferp, lengthl) \
+        __JAVA_CLASSFILE_PARSER_TRACE_U1_ARRAY(_##scope, onstack.arrayp, onstack.arrayl, bufferp, lengthl); \
       } else {                                                          \
         __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack); \
         errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                       \
@@ -31,6 +28,6 @@
     } else {                                                            \
       onstack.arrayp = NULL;                                            \
     }                                                                   \
-  }
+  } while (0)
 
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_U1_ARRAY_H */

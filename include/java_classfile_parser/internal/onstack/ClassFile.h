@@ -1,11 +1,10 @@
 #ifndef JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CLASSFILE_H
 #define JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CLASSFILE_H
 
-#include <java_classfile_parser.h>
-#include "java_classfile_parser/internal/onstack/free.h"
-#include "java_classfile_parser/internal/onstack/u2.h"
-#include "java_classfile_parser/internal/onstack/u2/array.h"
-#include "java_classfile_parser/internal/onstack/u4.h"
+#include "java_classfile_parser/internal/onstack/cp_info.h"
+#include "java_classfile_parser/internal/onstack/field_info.h"
+#include "java_classfile_parser/internal/onstack/method_info.h"
+#include "java_classfile_parser/internal/onstack/attribute_info.h"
 
 /* We have to explicitely initialize all counters to 0 to avoid corruption at freev() phase in case of error */
 #define _JAVA_CLASSFILE_PARSER_ClassFile(scope, endianness, onstack, bufferp, lengthl) do { \
@@ -42,7 +41,7 @@
           for (_##scope##j = _##scope##i+1; _##scope##j < _##scope##max; _##scope##j++) { \
             onstack.constant_poolpp[_##scope##j] = NULL;                \
           }                                                             \
-          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack);  \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack); \
           return NULL;                                                  \
         }                                                               \
         switch (onstack.constant_poolpp[_##scope##i]->tag) {            \
@@ -70,7 +69,7 @@
                                                                         \
       onstack.fieldspp = (java_classfile_parser_field_info_t **) malloc(_##scope##max * sizeof(java_classfile_parser_field_info_t *)); \
       if (onstack.fieldspp == NULL) {                                   \
-        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack);  \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack); \
         return NULL;                                                    \
       }                                                                 \
       onstack.fields_count = 0;                                         \
@@ -87,37 +86,107 @@
         }                                                               \
       }                                                                 \
     }                                                                   \
+    _JAVA_CLASSFILE_PARSER_U2(_##scope, ClassFile, onstack, endianness, methods_count, bufferp, lengthl); \
+    if (onstack.methods_count > 0) {                                    \
+      java_classfile_parser_u2_t _##scope##max = onstack.methods_count; \
+      java_classfile_parser_u2_t _##scope##i;                           \
+                                                                        \
+      onstack.methodspp = (java_classfile_parser_method_info_t **) malloc(_##scope##max * sizeof(java_classfile_parser_method_info_t *)); \
+      if (onstack.methodspp == NULL) {                                  \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack); \
+        return NULL;                                                    \
+      }                                                                 \
+      onstack.methods_count = 0;                                        \
+      for (_##scope##i = 0; _##scope##i < _max; _##scope##i++, onstack.methods_count++) { \
+        onstack.methodspp[_##scope##i] = _java_classfile_parser_method_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
+        if (onstack.methodspp[_##scope##i] == NULL) {                   \
+          java_classfile_parser_u2_t _##scope##j;                       \
+                                                                        \
+          for (_##scope##j = _##scope##i + 1; _##scope##j < _##scope##max; _##scope##j++) { \
+            onstack.methodspp[_##scope##j] = NULL;                      \
+          }                                                             \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack); \
+          return NULL;                                                  \
+        }                                                               \
+      }                                                                 \
+    }                                                                   \
+    _JAVA_CLASSFILE_PARSER_U2(_##scope, ClassFile, onstack, endianness, attributes_count, bufferp, lengthl); \
+    if (onstack.attributes_count > 0) {                                 \
+      java_classfile_parser_u2_t _##scope##max = onstack.attributes_count; \
+      java_classfile_parser_u2_t _##scope##i;                           \
+                                                                        \
+      onstack.attributespp = (java_classfile_parser_attribute_info_t **) malloc(_##scope##max * sizeof(java_classfile_parser_attribute_info_t *)); \
+      if (onstack.attributespp == NULL) {                               \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack); \
+        return NULL;                                                    \
+      }                                                                 \
+      onstack.attributes_count = 0;                                     \
+      for (_##scope##i = 0; _##scope##i < _max; _##scope##i++, onstack.attributes_count++) { \
+        onstack.attributespp[_##scope##i] = _java_classfile_parser_attribute_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
+        if (onstack.attributespp[_##scope##i] == NULL) {                \
+          java_classfile_parser_u2_t _##scope##j;                       \
+                                                                        \
+          for (_##scope##j = _##scope##i + 1; _##scope##j < _##scope##max; _##scope##j++) { \
+            onstack.attributespp[_##scope##j] = NULL;                   \
+          }                                                             \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack); \
+          return NULL;                                                  \
+        }                                                               \
+      }                                                                 \
+    }                                                                   \
   } while (0)
 
-#define __JAVA_CLASSFILE_PARSER_ClassFile_freev(scope, p)               \
-  if (p->constant_poolpp != NULL) {                                     \
-    if (p->constant_pool_count > 1) {                                   \
-      java_classfile_parser_u2_t _##scope##max = p->constant_pool_count - 1; \
-      java_classfile_parser_u2_t _##scope##i;                           \
-      for (_##scope##i = 0; _##scope##i < _##scope##max; _##scope##i++) { \
-        _java_classfile_parser_cp_info_freev(p->constant_poolpp[_##scope##i]); \
+#define __JAVA_CLASSFILE_PARSER_ClassFile_freev(scope, p) do {          \
+    if (p->constant_poolpp != NULL) {                                   \
+      if (p->constant_pool_count > 1) {                                 \
+        java_classfile_parser_u2_t _##scope##max = p->constant_pool_count - 1; \
+        java_classfile_parser_u2_t _##scope##i;                         \
+        for (_##scope##i = 0; _##scope##i < _##scope##max; _##scope##i++) { \
+          _java_classfile_parser_cp_info_freev(p->constant_poolpp[_##scope##i]); \
+        }                                                               \
       }                                                                 \
+      free(p->constant_poolpp);                                         \
     }                                                                   \
-    free(p->constant_poolpp);                                           \
-  }                                                                     \
-  if (p->interfacesp != NULL) {                                         \
-    free(p->interfacesp);                                               \
-  }                                                                     \
-  if (p->fieldspp != NULL) {                                            \
-    if (p->fields_count > 0) {                                          \
-      java_classfile_parser_u2_t _##scope##max = p->fields_count;       \
-      java_classfile_parser_u2_t _##scope##i;                           \
-      for (_##scope##i = 0; _##scope##i < _##scope##max; _##scope##i++) { \
-        _java_classfile_parser_field_info_freev(p->fieldspp[_##scope##i]); \
+    if (p->interfacesp != NULL) {                                       \
+      free(p->interfacesp);                                             \
+    }                                                                   \
+    if (p->fieldspp != NULL) {                                          \
+      if (p->fields_count > 0) {                                        \
+        java_classfile_parser_u2_t _##scope##max = p->fields_count;     \
+        java_classfile_parser_u2_t _##scope##i;                         \
+        for (_##scope##i = 0; _##scope##i < _##scope##max; _##scope##i++) { \
+          _java_classfile_parser_field_info_freev(p->fieldspp[_##scope##i]); \
+        }                                                               \
       }                                                                 \
+      free(p->fieldspp);                                                \
     }                                                                   \
-    free(p->fieldspp);                                                  \
-  }
+    if (p->methodspp != NULL) {                                         \
+      if (p->methods_count > 0) {                                       \
+        java_classfile_parser_u2_t _##scope##max = p->methods_count;    \
+        java_classfile_parser_u2_t _##scope##i;                         \
+        for (_##scope##i = 0; _##scope##i < _##scope##max; _##scope##i++) { \
+          _java_classfile_parser_method_info_freev(p->methodspp[_##scope##i]); \
+        }                                                               \
+      }                                                                 \
+      free(p->methodspp);                                               \
+    }                                                                   \
+    if (p->attributespp != NULL) {                                      \
+      if (p->attributes_count > 0) {                                    \
+        java_classfile_parser_u2_t _##scope##max = p->attributes_count; \
+        java_classfile_parser_u2_t _##scope##i;                         \
+        for (_##scope##i = 0; _##scope##i < _##scope##max; _##scope##i++) { \
+          _java_classfile_parser_attribute_info_freev(p->attributespp[_##scope##i]); \
+        }                                                               \
+      }                                                                 \
+      free(p->attributespp);                                            \
+    }                                                                   \
+  } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_ClassFile_freev(scope, p)                \
-  if (p != NULL) {                                                      \
-    __JAVA_CLASSFILE_PARSER_ClassFile_freev(_##scope, p)                \
-    free(p);                                                            \
-  }
+#define _JAVA_CLASSFILE_PARSER_ClassFile_freev(scope, p) do {           \
+    if (p != NULL) {                                                    \
+      __JAVA_CLASSFILE_PARSER_ClassFile_freev(_##scope, p);             \
+      free(p);                                                          \
+    }                                                                   \
+  } while (0)
 
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CLASSFILE_H */

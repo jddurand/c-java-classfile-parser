@@ -25,8 +25,14 @@ typedef enum _java_classfile_parser_cp_info_e {
 } java_classfile_parser_cp_info_e;
 
 typedef enum _java_classfile_parser_err_e {
-  JAVA_CLASSFILE_PARSER_ERR_EFAULT = -1
+  JAVA_CLASSFILE_PARSER_ERR_EFAULT = -1,
+  JAVA_CLASSFILE_PARSER_ERR_INVALID_CP_INFO_TAG = -2
 } java_classfile_parser_err_e;
+
+static const char *java_classfile_parser_err[] = {
+  "Not enough data",
+  "Invalid constant pool tag"
+};
 
 #ifdef __cplusplus
 extern "C" {

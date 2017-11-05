@@ -1,11 +1,8 @@
 #ifndef JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_U2_ARRAY_H
 #define JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_U2_ARRAY_H
 
-#include "java_classfile_parser/internal/onstack/free.h"
-
 /* Notes: U2 counters are always stored in an u2 as per the spec */
-#define _JAVA_CLASSFILE_PARSER_U2_ARRAY_BE(scope, type, onstack, arrayp, arrayl, bufferp, lengthl) \
-  {                                                                     \
+#define _JAVA_CLASSFILE_PARSER_U2_ARRAY_BE(scope, type, onstack, arrayp, arrayl, bufferp, lengthl) do { \
     size_t _##scope##arrayl = onstack.arrayl;                           \
     size_t _##scope##arrayu1l = _##scope##arrayl * 2;                   \
                                                                         \
@@ -16,7 +13,7 @@
         _##scope##p = (java_classfile_parser_u2_t *) malloc(_##scope##arrayl * sizeof(java_classfile_parser_u2_t)); \
         if (_##scope##p == NULL) {                                      \
           int _##scope##save_errno = errno;                             \
-          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);       \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack); \
           errno = _##scope##save_errno;                                 \
           return NULL;                                                  \
         }                                                               \
@@ -37,19 +34,18 @@
           }                                                             \
         }                                                               \
         lengthl -= _##scope##arrayu1l;                                  \
-        __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(_##scope, onstack.arrayp, onstack.arrayl, bufferp, lengthl) \
+        __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(_##scope, onstack.arrayp, onstack.arrayl, bufferp, lengthl); \
       } else {                                                          \
-        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);       \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack); \
         errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                       \
         return NULL;                                                    \
       }                                                                 \
     } else {                                                            \
       onstack.arrayp = NULL;                                            \
     }                                                                   \
-  }
+  } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_U2_ARRAY_LE(scope, type, onstack, arrayp, arrayl, bufferp, lengthl) \
-  {                                                                     \
+#define _JAVA_CLASSFILE_PARSER_U2_ARRAY_LE(scope, type, onstack, arrayp, arrayl, bufferp, lengthl) do { \
     size_t _##scope##arrayl = onstack.arrayl;                           \
     size_t _##scope##arrayu1l = _##scope##arrayl * 2;                   \
                                                                         \
@@ -60,7 +56,7 @@
         _##scope##p = (java_classfile_parser_u2_t *) malloc(_##scope##arrayl * sizeof(java_classfile_parser_u2_t)); \
         if (_##scope##p == NULL) {                                      \
           int _##scope##save_errno = errno;                             \
-          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);     \
+          __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack); \
           errno = _##scope##save_errno;                                 \
           return NULL;                                                  \
         }                                                               \
@@ -88,16 +84,16 @@
           }                                                             \
         }                                                               \
         lengthl -= _##scope##arrayu1l;                                  \
-        __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(_##scope, onstack.arrayp, onstack.arrayl, bufferp, lengthl) \
+        __JAVA_CLASSFILE_PARSER_TRACE_U2_ARRAY(_##scope, onstack.arrayp, onstack.arrayl, bufferp, lengthl); \
       } else {                                                          \
-        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack);       \
-          errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                     \
+        __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, type, onstack); \
+        errno = JAVA_CLASSFILE_PARSER_ERR_EFAULT;                       \
         return NULL;                                                    \
       }                                                                 \
     } else {                                                            \
       onstack.arrayp = NULL;                                            \
     }                                                                   \
-  }
+  } while (0)
 
 #define _JAVA_CLASSFILE_PARSER_U2_ARRAY(scope, type, onstack, endianness, arrayp, arrayl, bufferp, lengthl) _JAVA_CLASSFILE_PARSER_U2_ARRAY_##endianness(_##scope, type, onstack, arrayp, arrayl, bufferp, lengthl) 
 
