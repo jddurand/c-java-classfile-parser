@@ -26,7 +26,7 @@
     _JAVA_CLASSFILE_PARSER_U2(_##scope, ClassFile, onstack, endianness, major_version, bufferp, lengthl); \
     _JAVA_CLASSFILE_PARSER_U2(_##scope, ClassFile, onstack, endianness, constant_pool_count, bufferp, lengthl); \
     if (onstack.constant_pool_count > 1) {                              \
-      java_classfile_parser_u2_t _##scope##max = onstack.constant_pool_count - 1; \
+      java_classfile_parser_u2_t _##scope##max = onstack.constant_pool_count; \
       java_classfile_parser_u2_t _##scope##i;                           \
                                                                         \
       onstack.constant_poolpp = (java_classfile_parser_cp_info_t **) malloc(_##scope##max * sizeof(java_classfile_parser_cp_info_t *)); \
@@ -34,8 +34,9 @@
         __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, ClassFile, onstack); \
         return NULL;                                                    \
       }                                                                 \
+      onstack.constant_poolpp[0] = NULL;                                \
       onstack.constant_pool_count = 1;                                  \
-      for (_##scope##i = 0; _##scope##i < _##scope##max; _##scope##i++, onstack.constant_pool_count++) { \
+      for (_##scope##i = 1; _##scope##i < _##scope##max; _##scope##i++, onstack.constant_pool_count++) { \
         onstack.constant_poolpp[_##scope##i] = _java_classfile_parser_cp_info_##endianness##_newp(bufferp, lengthl, &bufferp, &lengthl); \
         if (onstack.constant_poolpp[_##scope##i] == NULL) {             \
           java_classfile_parser_u2_t _##scope##j;                       \
@@ -141,9 +142,9 @@
 #define __JAVA_CLASSFILE_PARSER_ClassFile_freev(scope, p) do {          \
     if (p->constant_poolpp != NULL) {                                   \
       if (p->constant_pool_count > 1) {                                 \
-        java_classfile_parser_u2_t _##scope##max = p->constant_pool_count - 1; \
+        java_classfile_parser_u2_t _##scope##max = p->constant_pool_count; \
         java_classfile_parser_u2_t _##scope##i;                         \
-        for (_##scope##i = 0; _##scope##i < _##scope##max; _##scope##i++) { \
+        for (_##scope##i = 1; _##scope##i < _##scope##max; _##scope##i++) { \
           _java_classfile_parser_cp_info_freev(p->constant_poolpp[_##scope##i]); \
         }                                                               \
       }                                                                 \
