@@ -7,6 +7,8 @@
 #include "java_classfile_parser/internal/onstack/attribute_info.h"
 
 /* We have to explicitely initialize all counters to 0 to avoid corruption at freev() phase in case of error */
+/* The spec says that the constant_pool table is indexed from 1 to constant_pool_count - 1. This means that */
+/* index 0 is unsable. So that array is: [0,1,...constant_pool_count - 1] i.e. constant_pool_count elements */
 #define _JAVA_CLASSFILE_PARSER_ClassFile(scope, endianness, onstack, bufferp, lengthl) do { \
     onstack.constant_pool_count = 0;                                    \
     onstack.constant_poolpp = NULL;                                     \
