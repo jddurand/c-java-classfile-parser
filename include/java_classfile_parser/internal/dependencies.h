@@ -4,6 +4,7 @@
 /* All dependencies are loaded here */
 
 #include <java_classfile_parser.h>
+#include "java_classfile_parser/internal/constants.h"
 #include "java_classfile_parser/internal/config.h"
 #include "java_classfile_parser/internal/endian.h"
 #include "java_classfile_parser/internal/trace.h"

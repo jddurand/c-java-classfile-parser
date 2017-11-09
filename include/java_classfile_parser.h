@@ -28,11 +28,20 @@ typedef enum _java_classfile_parser_attribute_info_e {
 } java_classfile_parser_attribute_info_e;
 
 typedef enum _java_classfile_parser_err_e {
-  JAVA_CLASSFILE_PARSER_ERR_EFAULT                    = -1,
-  JAVA_CLASSFILE_PARSER_ERR_CP_INFO_TAG               = -2,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_MAGIC           = -3,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_UNSUPPORTED     = -4,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FLAG = -5
+  JAVA_CLASSFILE_PARSER_ERR_EFAULT                                    = - 1,
+  JAVA_CLASSFILE_PARSER_ERR_CP_INFO_TAG                               = - 2,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_MAGIC                           = - 3,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_UNSUPPORTED                     = - 4,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FLAG                 = - 5,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_VERSION              = - 6,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_THIS_CLASS           = - 7,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_SUPER_CLASS          = - 8,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_INTERFACES_COUNT     = - 9,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FIELDS_COUNT         = -10,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_METHODS_COUNT        = -11,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTES_COUNT     = -12,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX = -13,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME       = -14
 } java_classfile_parser_err_e;
 
 static const char *java_classfile_parser_err[] = {
@@ -40,7 +49,16 @@ static const char *java_classfile_parser_err[] = {
   "Invalid constant pool tag",
   "Invalid ClassFile magic number",
   "Unsupported ClassFile version",
-  "ACC_MODULE flag is not alone in ClassFile's access_flags"
+  "ACC_MODULE flag is not alone in ClassFile's access_flags",
+  "ACC_MODULE flag is set but ClassFile's major version is < 53",
+  "ACC_MODULE flag is set but ClassFile's this_class is invalid",
+  "ACC_MODULE flag is set but ClassFile's super_class is invalid",
+  "ACC_MODULE flag is set but ClassFile's interfaces_count is invalid",
+  "ACC_MODULE flag is set but ClassFile's fields_count is invalid",
+  "ACC_MODULE flag is set but ClassFile's methods_count is invalid",
+  "ACC_MODULE flag is set but ClassFile's attributes_count is invalid",
+  "ACC_MODULE flag is set but ClassFile's attribute's name_index is invalid",
+  "ACC_MODULE flag is set but ClassFile's attribute's name is invalid"
 };
 
 #include <java_classfile_parser/export.h>

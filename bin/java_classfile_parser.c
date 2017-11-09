@@ -12,14 +12,14 @@
 #endif
 
 int main(int argc, char **argv) {
-  int         fd = -1;
-  char       *bytep = NULL;
-  size_t      bytel;
-  char       *remainsp = NULL;
-  size_t      remainsl;
-  int         rc;
-  java_classfile_parser_ClassFile_t *classFilep;
-  struct stat buf;
+  int                                fd = -1;
+  char                              *bytep = NULL;
+  size_t                             bytel;
+  char                              *remainsp = NULL;
+  java_classfile_parser_ClassFile_t *classFilep = NULL;
+  size_t                             remainsl;
+  int                                rc;
+  struct stat                        buf;
 
   if (argc < 2) {
     fprintf(stderr, "Usage: %s file.class\n", argv[0]);
@@ -63,10 +63,14 @@ int main(int argc, char **argv) {
   if (classFilep == NULL) {
     fprintf(stderr, "%s parsing failure\n", argv[1]);
     goto err;
-  } else {
-    fprintf(stderr, "%s parsing success, remains %lu bytes\n", argv[1], (unsigned long) remainsl);
-    java_classfile_parser_ClassFile_freev(classFilep);
   }
+  fprintf(stderr, "%s parsing success, remains %lu bytes\n", argv[1], (unsigned long) remainsl);
+
+  if (! java_classfile_parser_ClassFile_validateb(classFilep, classFilep)) {
+    fprintf(stderr, "%s validation failure\n", argv[1]);
+    goto err;
+  }
+  fprintf(stderr, "%s validation success\n", argv[1]);
 
   rc = 0;
   goto done;
@@ -83,6 +87,7 @@ int main(int argc, char **argv) {
   if (bytep != NULL) {
     free(bytep);
   }
-  
+  java_classfile_parser_ClassFile_freev(classFilep); /* This is NULL aware */
+
   return rc;
 }
