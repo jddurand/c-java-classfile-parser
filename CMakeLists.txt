@@ -6,7 +6,7 @@ ENDIF ()
 MYPACKAGESTART (java_classfile_parser 1 0 0)
 
 MYPACKAGELIBRARY(
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/config.h.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/java_classfile_parser/internal/config.h.in
   ${INCLUDE_OUTPUT_PATH}/java_classfile_parser/internal/config.h
   src/java_classfile_parser.c)
 
