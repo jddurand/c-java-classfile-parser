@@ -2,8 +2,6 @@
 #define JAVA_CLASSFILE_PARSER_H
 
 #include <stddef.h> /* For size_t */
-#include <java_classfile_parser/export.h>
-#include <java_classfile_parser/structures.h>
 
 typedef enum _java_classfile_parser_cp_info_e {
   JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class              =  7,
@@ -24,6 +22,11 @@ typedef enum _java_classfile_parser_cp_info_e {
   JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Package            = 20
 } java_classfile_parser_cp_info_e;
 
+typedef enum _java_classfile_parser_attribute_info_e {
+  JAVA_CLASSFILE_PARSER_ATTRIBUTE_INFO_Unknown              =  0,
+  JAVA_CLASSFILE_PARSER_ATTRIBUTE_INFO_ConstantValue        =  1
+} java_classfile_parser_attribute_info_e;
+
 typedef enum _java_classfile_parser_err_e {
   JAVA_CLASSFILE_PARSER_ERR_EFAULT = -1,
   JAVA_CLASSFILE_PARSER_ERR_INVALID_CP_INFO_TAG = -2
@@ -34,12 +37,16 @@ static const char *java_classfile_parser_err[] = {
   "Invalid constant pool tag"
 };
 
+#include <java_classfile_parser/export.h>
+#include <java_classfile_parser/structures.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
   /* All functions have the same template */
 #define JAVA_CLASSFILE_PARSER_DECL(type)                                \
   java_classfile_parser_EXPORT java_classfile_parser_##type##_t *java_classfile_parser_##type##_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp); \
+  java_classfile_parser_EXPORT short                             java_classfile_parser_##type##_validateb(java_classfile_parser_##type##_t *p); \
   java_classfile_parser_EXPORT void                              java_classfile_parser_##type##_freev(java_classfile_parser_##type##_t *p)
 
   JAVA_CLASSFILE_PARSER_DECL(ClassFile);
@@ -63,6 +70,7 @@ extern "C" {
   JAVA_CLASSFILE_PARSER_DECL(CONSTANT_InvokeDynamic_info);
   JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Module_info);
   JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Package_info);
+  JAVA_CLASSFILE_PARSER_DECL(ConstantValue_attribute);
 
 #ifdef __cplusplus
 }

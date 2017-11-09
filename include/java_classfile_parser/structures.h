@@ -24,6 +24,8 @@ typedef struct java_classfile_parser_CONSTANT_MethodType_info         java_class
 typedef struct java_classfile_parser_CONSTANT_InvokeDynamic_info      java_classfile_parser_CONSTANT_InvokeDynamic_info_t;
 typedef struct java_classfile_parser_CONSTANT_Module_info             java_classfile_parser_CONSTANT_Module_info_t;
 typedef struct java_classfile_parser_CONSTANT_Package_info            java_classfile_parser_CONSTANT_Package_info_t;
+typedef struct java_classfile_parser_Unknown_attribute                java_classfile_parser_Unknown_attribute_t;
+typedef struct java_classfile_parser_ConstantValue_attribute          java_classfile_parser_ConstantValue_attribute_t;
 
 struct java_classfile_parser_ClassFile {
   java_classfile_parser_u4_t               magic;
@@ -82,10 +84,25 @@ struct java_classfile_parser_method_info {
   java_classfile_parser_attribute_info_t **attributespp;
 };
 
-struct java_classfile_parser_attribute_info {
-  java_classfile_parser_u2_t  attribute_name_index;
-  java_classfile_parser_u4_t  attribute_length;
+/* Attributes sub-structures must be defined before attribute_info */
+/* It is only at validation phase that an attribute may move to a known type */
+
+struct java_classfile_parser_Unknown_attribute {
   java_classfile_parser_u1_t *infop;
+};
+
+struct java_classfile_parser_ConstantValue_attribute {
+  java_classfile_parser_u2_t constantvalue_index;
+};
+
+struct java_classfile_parser_attribute_info {
+  java_classfile_parser_u2_t             attribute_name_index;
+  java_classfile_parser_u4_t             attribute_length;
+  java_classfile_parser_u1_t            *infop;
+  java_classfile_parser_attribute_info_e type;
+  union {
+    java_classfile_parser_Unknown_attribute_t unknown;
+  } u;
 };
 
 struct java_classfile_parser_CONSTANT_Class_info {
