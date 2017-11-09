@@ -37,48 +37,32 @@ static const char *java_classfile_parser_err[] = {
 #ifdef __cplusplus
 extern "C" {
 #endif
-  java_classfile_parser_EXPORT java_classfile_parser_ClassFile_t                        *java_classfile_parser_ClassFile_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_ClassFile_freev(java_classfile_parser_ClassFile_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_cp_info_t                          *java_classfile_parser_cp_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_cp_info_freev(java_classfile_parser_cp_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_field_info_t                       *java_classfile_parser_field_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_field_info_freev(java_classfile_parser_field_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_method_info_t                      *java_classfile_parser_method_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_method_info_freev(java_classfile_parser_method_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_attribute_info_t                   *java_classfile_parser_attribute_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_attribute_info_freev(java_classfile_parser_attribute_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Class_info_t              *java_classfile_parser_CONSTANT_Class_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Class_info_freev(java_classfile_parser_CONSTANT_Class_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Fieldref_info_t           *java_classfile_parser_CONSTANT_Fieldref_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Fieldref_info_freev(java_classfile_parser_CONSTANT_Fieldref_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Methodref_info_t          *java_classfile_parser_CONSTANT_Methodref_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Methodref_info_freev(java_classfile_parser_CONSTANT_Methodref_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_InterfaceMethodref_info_t *java_classfile_parser_CONSTANT_InterfaceMethodref_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_InterfaceMethodref_info_freev(java_classfile_parser_CONSTANT_InterfaceMethodref_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_String_info_t             *java_classfile_parser_CONSTANT_String_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_String_info_freev(java_classfile_parser_CONSTANT_String_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Integer_info_t            *java_classfile_parser_CONSTANT_Integer_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Integer_info_freev(java_classfile_parser_CONSTANT_Integer_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Float_info_t              *java_classfile_parser_CONSTANT_Float_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Float_info_freev(java_classfile_parser_CONSTANT_Float_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Long_info_t               *java_classfile_parser_CONSTANT_Long_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Long_info_freev(java_classfile_parser_CONSTANT_Long_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Double_info_t             *java_classfile_parser_CONSTANT_Double_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Double_info_freev(java_classfile_parser_CONSTANT_Double_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_NameAndType_info_t        *java_classfile_parser_CONSTANT_NameAndType_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_NameAndType_info_freev(java_classfile_parser_CONSTANT_NameAndType_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Utf8_info_t               *java_classfile_parser_CONSTANT_Utf8_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Utf8_info_freev(java_classfile_parser_CONSTANT_Utf8_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_MethodHandle_info_t       *java_classfile_parser_CONSTANT_MethodHandle_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_MethodHandle_info_freev(java_classfile_parser_CONSTANT_MethodHandle_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_MethodType_info_t         *java_classfile_parser_CONSTANT_MethodType_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_MethodType_info_freev(java_classfile_parser_CONSTANT_MethodType_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_InvokeDynamic_info_t      *java_classfile_parser_CONSTANT_InvokeDynamic_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_InvokeDynamic_info_freev(java_classfile_parser_CONSTANT_InvokeDynamic_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Module_info_t             *java_classfile_parser_CONSTANT_Module_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Module_info_freev(java_classfile_parser_CONSTANT_Module_info_t *p);
-  java_classfile_parser_EXPORT java_classfile_parser_CONSTANT_Package_info_t            *java_classfile_parser_CONSTANT_Package_info_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp);
-  java_classfile_parser_EXPORT void                                                      java_classfile_parser_CONSTANT_Package_info_freev(java_classfile_parser_CONSTANT_Package_info_t *p);
+  /* All functions have the same template */
+#define JAVA_CLASSFILE_PARSER_DECL(type)                                \
+  java_classfile_parser_EXPORT java_classfile_parser_##type##_t *java_classfile_parser_##type##_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp); \
+  java_classfile_parser_EXPORT void                              java_classfile_parser_##type##_freev(java_classfile_parser_##type##_t *p)
+
+  JAVA_CLASSFILE_PARSER_DECL(ClassFile);
+  JAVA_CLASSFILE_PARSER_DECL(cp_info);
+  JAVA_CLASSFILE_PARSER_DECL(field_info);
+  JAVA_CLASSFILE_PARSER_DECL(method_info);
+  JAVA_CLASSFILE_PARSER_DECL(attribute_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Class_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Fieldref_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Methodref_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_InterfaceMethodref_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_String_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Integer_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Float_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Long_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Double_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_NameAndType_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Utf8_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_MethodHandle_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_MethodType_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_InvokeDynamic_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Module_info);
+  JAVA_CLASSFILE_PARSER_DECL(CONSTANT_Package_info);
 
 #ifdef __cplusplus
 }
