@@ -19,6 +19,11 @@ CHECK_INCLUDE_FILE ("netinet/in.h" HAVE_NETINET_IN_H)
 CHECK_INCLUDE_FILE ("machine/endian.h" HAVE_MACHINE_ENDIAN_H)
 CHECK_INCLUDE_FILE ("sys/endian.h" HAVE_SYS_ENDIAN_H)
 
+#######################
+# For open on Windows #
+#######################
+CHECK_INCLUDE_FILE ("io.h" HAVE_IO_H)
+
 ################
 # Executables  #
 ################

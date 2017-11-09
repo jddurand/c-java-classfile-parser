@@ -1,6 +1,16 @@
 #include <java_classfile_parser.h>
 #include "java_classfile_parser/internal/config.h"
 
+#if _WIN32
+#define JAVA_CLASSFILE_PARSER_OPEN _open
+#define JAVA_CLASSFILE_PARSER_READ _read
+#define JAVA_CLASSFILE_PARSER_CLOSE _close
+#else
+#define JAVA_CLASSFILE_PARSER_OPEN open
+#define JAVA_CLASSFILE_PARSER_READ read
+#define JAVA_CLASSFILE_PARSER_CLOSE close
+#endif
+
 int main(int argc, char **argv) {
   int         fd = -1;
   char       *bytep = NULL;
@@ -16,7 +26,11 @@ int main(int argc, char **argv) {
     goto err;
   }
 
-  fd = open(argv[1], O_RDONLY);
+  fd = JAVA_CLASSFILE_PARSER_OPEN(argv[1], O_RDONLY
+#ifdef O_BINARY
+				  |O_BINARY
+#endif
+				  );
   if (fd < 0) {
     fprintf(stderr, "%s open failure, %s\n", argv[1], strerror(errno));
     goto err;
@@ -39,7 +53,8 @@ int main(int argc, char **argv) {
     goto err;
   }
 
-  if (read(fd, bytep, bytel) != bytel) {
+  if (JAVA_CLASSFILE_PARSER_READ(fd, bytep, bytel) != bytel)
+    {
     fprintf(stderr, "read of %lu bytes failure, %s\n", (unsigned long) bytel, strerror(errno));
     goto err;
   }
@@ -61,7 +76,7 @@ int main(int argc, char **argv) {
 
  done:
   if (fd >= 0) {
-    if (close(fd) != 0) {
+    if (JAVA_CLASSFILE_PARSER_CLOSE(fd) != 0) {
       fprintf(stderr, "%s close failure, %s\n", argv[1], strerror(errno));
     }
   }

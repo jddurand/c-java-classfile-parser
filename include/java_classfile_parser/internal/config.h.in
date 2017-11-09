@@ -29,6 +29,7 @@
 #cmakedefine HAVE_NETINET_IN_H     @HAVE_NETINET_IN_H@
 #cmakedefine HAVE_MACHINE_ENDIAN_H @HAVE_MACHINE_ENDIAN_H@
 #cmakedefine HAVE_SYS_ENDIAN_H     @HAVE_SYS_ENDIAN_H@
+#cmakedefine HAVE_IO_H             @HAVE_IO_H@
 #cmakedefine SIZEOF_UNSIGNED_SHORT @SIZEOF_UNSIGNED_SHORT@
 #cmakedefine SIZEOF_UNSIGNED_LONG  @SIZEOF_UNSIGNED_LONG@
 
@@ -79,6 +80,9 @@
 #endif
 #ifdef HAVE_SYS_ENDIAN_H /* Android */
 #include <sys/endian.h>
+#endif
+#ifdef HAVE_IO_H
+#include <io.h>
 #endif
 
 #endif /* JAVA_CLASSFILE_PARSER_CONFIG_H */
