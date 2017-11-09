@@ -29,12 +29,16 @@ typedef enum _java_classfile_parser_attribute_info_e {
 
 typedef enum _java_classfile_parser_err_e {
   JAVA_CLASSFILE_PARSER_ERR_EFAULT = -1,
-  JAVA_CLASSFILE_PARSER_ERR_INVALID_CP_INFO_TAG = -2
+  JAVA_CLASSFILE_PARSER_ERR_INVALID_CP_INFO_TAG = -2,
+  JAVA_CLASSFILE_PARSER_ERR_INVALID_CLASSFILE_MAGIC = -3,
+  JAVA_CLASSFILE_PARSER_ERR_INVALID_CLASSFILE_UNSUPPORTED = -4
 } java_classfile_parser_err_e;
 
 static const char *java_classfile_parser_err[] = {
   "Not enough data",
-  "Invalid constant pool tag"
+  "Invalid constant pool tag",
+  "Invalid ClassFile magic number",
+  "Unsupported ClassFile version"
 };
 
 #include <java_classfile_parser/export.h>
@@ -46,7 +50,7 @@ extern "C" {
   /* All functions have the same template */
 #define JAVA_CLASSFILE_PARSER_DECL(type)                                \
   java_classfile_parser_EXPORT java_classfile_parser_##type##_t *java_classfile_parser_##type##_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp); \
-  java_classfile_parser_EXPORT short                             java_classfile_parser_##type##_validateb(java_classfile_parser_##type##_t *p); \
+  java_classfile_parser_EXPORT short                             java_classfile_parser_##type##_validateb(java_classfile_parser_ClassFile_t *classfilep, java_classfile_parser_##type##_t *p); \
   java_classfile_parser_EXPORT void                              java_classfile_parser_##type##_freev(java_classfile_parser_##type##_t *p)
 
   JAVA_CLASSFILE_PARSER_DECL(ClassFile);

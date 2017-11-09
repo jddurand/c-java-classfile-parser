@@ -24,4 +24,7 @@
     }                                                                   \
   } while (0)
 
+#define _JAVA_CLASSFILE_PARSER_attribute_info_validateb(classfilep, p) do { \
+  } while (0)
+
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_ATTRIBUTE_INFO_H */

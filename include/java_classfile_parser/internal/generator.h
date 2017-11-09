@@ -15,7 +15,17 @@
   void java_classfile_parser_##type##_freev(java_classfile_parser_##type##_t *p) \
   {                                                                     \
     _java_classfile_parser_##type##_freev(p);                           \
+  }                                                                     \
+                                                                        \
+  short java_classfile_parser_##type##_validateb(java_classfile_parser_ClassFile_t *classfilep, java_classfile_parser_##type##_t *p) \
+  {                                                                     \
+    if ((classfilep == NULL) || (p == NULL)) {                          \
+      errno = EINVAL;                                                   \
+      return 0;                                                         \
+    }                                                                   \
+    return _java_classfile_parser_##type##_validateb(classfilep, p);    \
   }
+
 
 /* ======================================================================== */
 /* EXPORTED FUNCTIONS PROXIES                                               */
@@ -84,7 +94,14 @@
   static void _java_classfile_parser_##type##_freev(java_classfile_parser_##type##_t *p) \
   {                                                                     \
     _JAVA_CLASSFILE_PARSER_##type##_freev(, p);                         \
+  }                                                                     \
+                                                                        \
+  static short _java_classfile_parser_##type##_validateb(java_classfile_parser_ClassFile_t *classfilep, java_classfile_parser_##type##_t *p) \
+  {                                                                     \
+    _JAVA_CLASSFILE_PARSER_##type##_validateb(classfilep, p);           \
+    return 1;                                                           \
   }
+
 
 /* ======================================================================== */
 /* FUNCTIONS GENERATOR                                                      */

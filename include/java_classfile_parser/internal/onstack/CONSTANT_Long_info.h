@@ -16,4 +16,7 @@
     }                                                                   \
   } while (0)
 
+#define _JAVA_CLASSFILE_PARSER_CONSTANT_Long_info_validateb(classfilep, p) do { \
+  } while (0)
+
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CONSTANT_LONG_INFO_H */

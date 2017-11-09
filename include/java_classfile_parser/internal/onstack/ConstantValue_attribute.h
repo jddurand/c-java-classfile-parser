@@ -15,4 +15,7 @@
     }                                                                   \
   } while (0)
 
+#define _JAVA_CLASSFILE_PARSER_ConstantValue_attribute_validateb(classfilep, p) do { \
+  } while (0)
+
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CONSTANTVALUE_ATTRIBUTE_H */

@@ -189,4 +189,42 @@
     }                                                                   \
   } while (0)
 
+#define _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(classfilep, p) do { \
+    if (p->magic != 0xCAFEBABE) {                                       \
+      errno = JAVA_CLASSFILE_PARSER_ERR_INVALID_CLASSFILE_MAGIC;        \
+      return 0;                                                         \
+    }                                                                   \
+  } while (0)
+
+/* Version check is done only if this software is compiled min and max version providers:
+   - JAVA_CLASSFILE_PARSER_JNI_VERSION_MIN
+   - JAVA_CLASSFILE_PARSER_JNI_VERSION_MAX
+
+   These are inclusive limits.
+
+   For example: -DJAVA_CLASSFILE_PARSER_JNI_VERSION_MIN=xxxmin -DJAVA_CLASSFILE_PARSER_JNI_VERSION_MAX=xxxmax
+*/
+
+#if defined(JAVA_CLASSFILE_PARSER_JNI_VERSION_MIN) && defined(JAVA_CLASSFILE_PARSER_JNI_VERSION_MAX)
+/* We make a float out of major_version and minor_version and compares */
+#define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(classfilep, p) do { \
+    float minf = (float) JAVA_CLASSFILE_PARSER_JNI_VERSION_MIN;         \
+    float maxf = (float) JAVA_CLASSFILE_PARSER_JNI_VERSION_MAX;         \
+    float f = (p->major_version * 1.0) + (p->minor_version / 10.);      \
+                                                                        \
+    if ((f < minf) || (f > maxf)) {                                     \
+      errno = JAVA_CLASSFILE_PARSER_ERR_INVALID_CLASSFILE_UNSUPPORTED;  \
+      return 0;                                                         \
+    }                                                                   \
+  } while (0)
+#else
+#define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(classfilep, p) do { \
+  } while (0)
+#endif
+
+#define _JAVA_CLASSFILE_PARSER_ClassFile_validateb(classfilep, p) do {  \
+    _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(classfilep, p);    \
+    _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(classfilep, p);  \
+  } while (0)
+
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CLASSFILE_H */
