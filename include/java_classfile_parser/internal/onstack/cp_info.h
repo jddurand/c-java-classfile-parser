@@ -134,7 +134,7 @@
       }                                                                 \
       break;                                                            \
     default:                                                            \
-      errno = JAVA_CLASSFILE_PARSER_ERR_INVALID_CP_INFO_TAG;            \
+      errno = JAVA_CLASSFILE_PARSER_ERR_CP_INFO_TAG;			\
       __JAVA_CLASSFILE_PARSER_ONSTACK_FREEV(_##scope, cp_info, onstack); \
       return NULL;                                                      \
     }                                                                   \

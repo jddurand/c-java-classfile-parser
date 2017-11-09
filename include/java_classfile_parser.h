@@ -28,17 +28,19 @@ typedef enum _java_classfile_parser_attribute_info_e {
 } java_classfile_parser_attribute_info_e;
 
 typedef enum _java_classfile_parser_err_e {
-  JAVA_CLASSFILE_PARSER_ERR_EFAULT = -1,
-  JAVA_CLASSFILE_PARSER_ERR_INVALID_CP_INFO_TAG = -2,
-  JAVA_CLASSFILE_PARSER_ERR_INVALID_CLASSFILE_MAGIC = -3,
-  JAVA_CLASSFILE_PARSER_ERR_INVALID_CLASSFILE_UNSUPPORTED = -4
+  JAVA_CLASSFILE_PARSER_ERR_EFAULT                    = -1,
+  JAVA_CLASSFILE_PARSER_ERR_CP_INFO_TAG               = -2,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_MAGIC           = -3,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_UNSUPPORTED     = -4,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FLAG = -5
 } java_classfile_parser_err_e;
 
 static const char *java_classfile_parser_err[] = {
   "Not enough data",
   "Invalid constant pool tag",
   "Invalid ClassFile magic number",
-  "Unsupported ClassFile version"
+  "Unsupported ClassFile version",
+  "ACC_MODULE flag is not alone in ClassFile's access_flags"
 };
 
 #include <java_classfile_parser/export.h>
