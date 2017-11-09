@@ -53,3 +53,13 @@ dkms.conf
 
 # Emacs garbage
 *~
+
+# CMake garbage
+CMakeCache.txt
+CMakeFiles/
+*.cmake
+LICENSE.txt
+Makefile
+
+# Our garbage
+output/
