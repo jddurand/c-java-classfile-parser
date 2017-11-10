@@ -212,7 +212,9 @@
     }                                                                   \
   } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(classfilep, p) do { \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(scope, contexts, classfilep, p) do { \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".magic", "start with magic = %x08lx", (unsigned long) p->magic); \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".magic", "..... test magic == 0x%08lx", (unsigned long) 0xCAFEBABE); \
     if (p->magic != 0xCAFEBABE) {                                       \
       errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_MAGIC;		\
       return 0;                                                         \
@@ -230,18 +232,22 @@
 
 #if defined(JAVA_CLASSFILE_PARSER_JNI_VERSION_MIN) && defined(JAVA_CLASSFILE_PARSER_JNI_VERSION_MAX)
 /* We make a float out of major_version and minor_version and compares */
-#define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(classfilep, p) do { \
-    float minf = (float) JAVA_CLASSFILE_PARSER_JNI_VERSION_MIN;         \
-    float maxf = (float) JAVA_CLASSFILE_PARSER_JNI_VERSION_MAX;         \
-    float f = (p->major_version * 1.0) + (p->minor_version / 10.);      \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(scope, contexts, classfilep, p) do { \
+    float _##scope##minf = (float) JAVA_CLASSFILE_PARSER_JNI_VERSION_MIN; \
+    float _##scope##maxf = (float) JAVA_CLASSFILE_PARSER_JNI_VERSION_MAX; \
+    float _##scope##f = (p->major_version * 1.0) + (p->minor_version / 10.); \
                                                                         \
-    if ((f < minf) || (f > maxf)) {                                     \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".{major_version,minor_version}", "start with major_version = %u, minor_version = %u", (unsigned int) p->major_version, (unsigned int) p->minor_version); \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".{major_version,minor_version}", "..... test %.1f <= %.1f <= %.1f ?", _##scope##minf, _##scope##f, _##scope##maxf); \
+    if ((_##scope##f < _##scope##minf) || (_##scope##f > _##scope##maxf)) { \
       errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_UNSUPPORTED;		\
       return 0;                                                         \
     }                                                                   \
   } while (0)
 #else
-#define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(classfilep, p) do { \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(scope, contexts, classfilep, p) do { \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".{major_version,minor_version}", "start with major_version = %u, minor_version = %u", (unsigned int) p->major_version, (unsigned int) p->minor_version); \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".{major_version,minor_version}", "skip"); \
   } while (0)
 #endif
 
@@ -287,13 +293,18 @@
    - An annotation type (JLS 9.6) must have its ACC_ANNOTATION flag set. If the ACC_ANNOTATION flag is set, the ACC_INTERFACE flag must also be set.
    - The ACC_ENUM flag indicates that this class or its superclass is declared as an enumerated type (JLS 8.9).
    - All bits of the access_flags item not assigned in Table 4.1-A are reserved for future use. They should be set to zero in generated class files and should be ignored by Java Virtual Machine implementations.
+
+   Note that the sentence "An annotation type (JLS 9.6) must have its ACC_ANNOTATION flag set. If the ACC_ANNOTATION flag is set, the ACC_INTERFACE flag must also be set." does not require a test because:
+   - In Module mode ACC_ANNOTATION is not allowed
+   - In Interface mode ACC_ANNOTATION MAY be set
+   - In Class mode ACC_ANNOTATION is not allowed
+   so the case ACC_ANNOTATION can happen only in the interface mode, so ACC_INTERFACE is set by definition.
      */
 
-#define _JAVA_CLASSFILE_PARSER_ClassFile_access_flags_validateb(classfilep, p) do { \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_access_flags_validateb(scope, contexts, classfilep, p) do { \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".access_flags", "start with access_flags = 0x%08lx, major_version = %u, this_class = %u, super_class = %u, interfaces_count = %u, fields_count = %u, methods_count = %u, attributes_count = %u", (unsigned long) p->access_flags, (unsigned int) p->major_version, (unsigned int) p->this_class, (unsigned int) p->super_class, (unsigned int) p->interfaces_count, (unsigned int) p->fields_count, (unsigned int) p->methods_count, (unsigned int) p->methods_count); \
     if ((p->access_flags & ACC_MODULE) == ACC_MODULE) {			\
-      									\
-      java_classfile_parser_attribute_info_t *attribute_infop;		\
-      static const char *utf8kos[] = {                                  \
+      static const char *_##scope##utf8kos[] = {			\
         UTF8_BYTES_ConstantValue,                                       \
         UTF8_BYTES_Code,                                                \
         UTF8_BYTES_StackMapTable,                                       \
@@ -321,7 +332,7 @@
         UTF8_BYTES_ModulePackages,					\
         UTF8_BYTES_ModuleMainClass					\
       };                                                                \
-      static const java_classfile_parser_u2_t utf8kolength[] = {        \
+      static const java_classfile_parser_u2_t _##scope##utf8kolength[] = { \
         UTF8_LENGTH_ConstantValue,					\
         UTF8_LENGTH_Code,                                               \
         UTF8_LENGTH_StackMapTable,					\
@@ -349,73 +360,82 @@
         UTF8_LENGTH_ModulePackages,					\
         UTF8_LENGTH_ModuleMainClass					\
       };                                                                \
-      int i;								\
-      java_classfile_parser_CONSTANT_Utf8_info_t *utf8_infop = NULL;	\
-      java_classfile_parser_u2_t utf8_length;				\
-      java_classfile_parser_u1_t *utf8_bytesp;				\
+      int _##scope##i;							\
+      java_classfile_parser_CONSTANT_Utf8_info_t *_##scope##utf8_infop = NULL; \
+      java_classfile_parser_u2_t _##scope##utf8_length;			\
+      java_classfile_parser_u1_t *_##scope##utf8_bytesp;		\
 									\
+      __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... Module mode"); \
+      __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".access_flags", ".... test access_flags == 0x%8lx ?", (unsigned long) ACC_MODULE); \
       if (p->access_flags != ACC_MODULE) {				\
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FLAG;	\
 	return 0;							\
       }									\
       									\
+      __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test major_version >= 53 ?"); \
       if (p->major_version < 53) {                                      \
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_VERSION; \
 	return 0;							\
       }									\
                                                                         \
+      __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test this_class is a CONSTANT_Module_info"); \
       _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(                           \
-          classfilep,                                                   \
-          p->this_class,                                                \
-          JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class,                 \
-          JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_THIS_CLASS,    \
-          _JAVA_CLASSFILE_PARSER_UTIL_EMPTY_BLOCK                       \
-      );                                                                \
+	_##scope,							\
+	contexts ".access_flags",					\
+	classfilep,							\
+	p->this_class,							\
+	JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Module,			\
+	JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_THIS_CLASS,	\
+	_JAVA_CLASSFILE_PARSER_UTIL_EMPTY_BLOCK				\
+	);								\
       									\
+      __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test super_class is 0"); \
       if (p->super_class != 0) {					\
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_SUPER_CLASS; \
 	return 0;							\
       }									\
       									\
+      __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test interfaces_count is 0"); \
       if (p->interfaces_count != 0) {					\
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_INTERFACES_COUNT; \
 	return 0;							\
       }									\
       									\
+      __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test fields_count is 0"); \
       if (p->fields_count != 0) {					\
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FIELDS_COUNT; \
 	return 0;							\
       }									\
       									\
+      __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test methods_count is 0"); \
       if (p->methods_count != 0) {					\
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_METHODS_COUNT; \
 	return 0;							\
       }									\
       									\
+      __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test attributes_count is 1"); \
       if (p->attributes_count != 1) {					\
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTES_COUNT; \
 	return 0;							\
       }									\
-      attribute_infop = p->attributespp[0];				\
-      if ((attribute_infop->attribute_name_index < 1) || (attribute_infop->attribute_name_index > p->constant_pool_count)) { \
-	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX; \
-	return 0;							\
-      }									\
       _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(                           \
-        classfilep,                                                     \
-        attribute_infop->attribute_name_index,                          \
-        JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Utf8,                    \
-        JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX, \
-        {                                                               \
-          utf8_infop = cp_infop->u.utf8Infop;                           \
-          utf8_length = utf8_infop->length;                             \
-          utf8_bytesp = utf8_infop->bytesp;                             \
-        }                                                               \
-      );                                                                \
-      if (utf8_length > 0) {						\
-	for (i = 0; i < sizeof(utf8kos) / sizeof(utf8kos[0]); i++) {	\
-  	  if (utf8_length == utf8kolength[i]) {				\
-            if (memcmp(utf8_bytesp, utf8kos[i], utf8_length) == 0) {    \
+	_##scope,							\
+	contexts ".access_flags",					\
+	classfilep,							\
+	p->attributespp[0]->attribute_name_index,			\
+	JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Utf8,			\
+	JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX, \
+	{								\
+	_##scope##utf8_infop = __##scope##cp_infop->u.utf8Infop;	\
+	_##scope##utf8_length = _##scope##utf8_infop->length;		\
+	_##scope##utf8_bytesp = _##scope##utf8_infop->bytesp;		\
+	}								\
+	);								\
+      if (_##scope##utf8_length > 0) {						\
+	for (_##scope##i = 0; _##scope##i < sizeof(_##scope##utf8kos) / sizeof(_##scope##utf8kos[0]); _##scope##i++) {	\
+  	  if (_##scope##utf8_length == _##scope##utf8kolength[_##scope##i]) {				\
+	    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".access_flags", ".... test Attribute's CONSTANT_Utf8 is %s", _##scope##utf8kos[_##scope##i]); \
+            if (memcmp(_##scope##utf8_bytesp, _##scope##utf8kos[_##scope##i], _##scope##utf8_length) == 0) {    \
 	      errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME; \
 	      return 0;							\
             }								\
@@ -424,6 +444,7 @@
       }									\
     } else {                                                            \
       if ((p->access_flags & ACC_INTERFACE) == ACC_INTERFACE) {         \
+	__JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... Interface mode"); \
         if ((p->access_flags & ACC_ABSTRACT) != ACC_ABSTRACT) {         \
           errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_ABSTRACT;	\
           return 0;                                                     \
@@ -445,30 +466,105 @@
           return 0;                                                     \
         }                                                               \
       } else {                                                          \
+	__JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... Class mode"); \
+	__JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test access_flags & ACC_ANNOTATION"); \
         if ((p->access_flags & ACC_ANNOTATION) == ACC_ANNOTATION) {                 \
           errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_ANNOTATION;	\
           return 0;                                                     \
         }                                                               \
+	__JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test access_flags & ACC_MODULE"); \
         if ((p->access_flags & ACC_MODULE) == ACC_MODULE) {                 \
           errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_MODULE;	\
           return 0;                                                     \
         }                                                               \
-        if (((p->access_flags & ACC_FINAL) == ACC_FINAL) && ((p->access_flags & ACC_ABSTRACT) == ACC_ABSTRACT)) { \
-          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_FINAL_ABSTRACT;	\
-          return 0;                                                     \
-        }                                                               \
-        if (((p->access_flags & ACC_ANNOTATION) == ACC_ANNOTATION) && ((p->access_flags & ACC_INTERFACE) != ACC_INTERFACE)) { \
-          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_ANNOTATION_INTERFACE;	\
-          return 0;                                                     \
+	__JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test access_flags & ACC_FINAL"); \
+        if ((p->access_flags & ACC_FINAL) == ACC_FINAL) {		\
+	  __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".access_flags", ".... test access_flags & ACC_ABSTRACT"); \
+	  if ((p->access_flags & ACC_ABSTRACT) == ACC_ABSTRACT) {	\
+	    errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_FINAL_ABSTRACT; \
+	    return 0;							\
+	  }								\
         }                                                               \
       }                                                                 \
     }									\
   } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_ClassFile_validateb(classfilep, p) do {  \
-    _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(classfilep, p);    \
-    _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(classfilep, p);  \
-    _JAVA_CLASSFILE_PARSER_ClassFile_access_flags_validateb(classfilep, p); \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_this_class_validateb(scope, contexts, classfilep, p) do { \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".this_class", "start with this_class = %u", (unsigned int) p->this_class); \
+    if ((p->access_flags & ACC_MODULE) != ACC_MODULE) {			\
+      _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(_##scope,			\
+					     contexts ".this_class",	\
+					     classfilep,		\
+					     p->this_class,		\
+					     JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class, \
+					     JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_THIS_CLASS, \
+					     _JAVA_CLASSFILE_PARSER_UTIL_EMPTY_BLOCK \
+									); \
+    }									\
+  } while (0)
+
+#define _JAVA_CLASSFILE_PARSER_ClassFile_super_class_validateb(scope, contexts, classfilep, p) do { \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".super_class", "start with super_class = %u", (unsigned int) p->super_class); \
+    if ((p->access_flags & ACC_MODULE) != ACC_MODULE) {			\
+      if ((p->access_flags & ACC_INTERFACE) != ACC_INTERFACE) {		\
+	if (p->super_class != 0) {					\
+	  _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(_##scope,		\
+						 contexts ".super_class", \
+						 classfilep,		\
+						 p->super_class,	\
+						 JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class, \
+						 JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS, \
+						 _JAVA_CLASSFILE_PARSER_UTIL_EMPTY_BLOCK \
+						 );                     \
+	} else {							\
+	  _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(_##scope,		\
+						 contexts ".super_class", \
+						 classfilep,		\
+						 p->this_class,	\
+						 JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class, \
+						 JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_THIS_CLASS, \
+						 {			\
+						   _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(__##scope, \
+											  contexts ".super_class", \
+											  classfilep, \
+											  __##scope##cp_infop->u.classInfop->name_index, \
+											  JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Utf8, \
+											  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_THIS_CLASS, \
+											  { \
+											    java_classfile_parser_CONSTANT_Utf8_info_t *___##scope##utf8Infop = ___##scope##cp_infop->u.utf8Infop; \
+									\
+											    if ((___##scope##utf8Infop->length != UTF8_LENGTH_Object) || (memcmp(___##scope##utf8Infop->bytesp, UTF8_BYTES_Object, UTF8_LENGTH_Object) != 0)) {	\
+											      errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_THIS_CLASS; \
+											      return 0;	\
+											    } \
+											  } \
+											 ); \
+						 }			\
+						 );                     \
+	}								\
+      } else {								\
+      }									\
+    }									\
+  } while (0)
+
+/* In the case of a classfile itself, the classfilep parameter should be the parsed classfile of */
+/* the super class. If it is needed but NULL, then validation will fail with a return code of -1 */
+/* and errno set to EAGAIN. Then the caller knows that it has to find the super class, call for its */
+/* parsing (no need of validation) and re-call our process using the parsed result of the super class. */
+/* It is guaranteed that, in this specific case, the name of the super class will always be available */
+/* using: 
+
+   p->constant_poolpp[p->this_class].u.utf8Infop->length
+   p->constant_poolpp[p->this_class].u.utf8Infop->bytesp
+
+*/
+#define _JAVA_CLASSFILE_PARSER_ClassFile_validateb(scope, classfilep, p) do { \
+    __JAVA_CLASSFILE_PARSER_TRACE(_##scope, "ClassFile", "start"); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(_##scope, "ClassFile", classfilep, p); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(_##scope, "ClassFile", classfilep, p); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_access_flags_validateb(_##scope, "ClassFile", classfilep, p); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_this_class_validateb(_##scope, "ClassFile", classfilep, p); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_super_class_validateb(_##scope, "ClassFile", classfilep, p); \
   } while (0)
 
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CLASSFILE_H */

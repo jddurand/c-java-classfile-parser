@@ -56,7 +56,7 @@
     }                                                                   \
   } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_method_info_validateb(classfilep, p) do { \
+#define _JAVA_CLASSFILE_PARSER_method_info_validateb(scope, classfilep, p) do { \
   } while (0)
 
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_METHOD_INFO_H */

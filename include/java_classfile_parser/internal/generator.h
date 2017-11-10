@@ -98,7 +98,7 @@
                                                                         \
   static short _java_classfile_parser_##type##_validateb(java_classfile_parser_ClassFile_t *classfilep, java_classfile_parser_##type##_t *p) \
   {                                                                     \
-    _JAVA_CLASSFILE_PARSER_##type##_validateb(classfilep, p);           \
+    _JAVA_CLASSFILE_PARSER_##type##_validateb(, classfilep, p);		\
     return 1;                                                           \
   }
 

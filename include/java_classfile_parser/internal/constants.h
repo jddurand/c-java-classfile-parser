@@ -27,6 +27,7 @@
 #define UTF8_BYTES_Module                               "Module"
 #define UTF8_BYTES_ModulePackages                       "ModulePackages"
 #define UTF8_BYTES_ModuleMainClass                      "ModuleMainClass"
+#define UTF8_BYTES_Object                               "Object"
 
 #define UTF8_LENGTH_ConstantValue                        13
 #define UTF8_LENGTH_Code                                 4
@@ -54,5 +55,6 @@
 #define UTF8_LENGTH_Module                               6
 #define UTF8_LENGTH_ModulePackages                       14
 #define UTF8_LENGTH_ModuleMainClass                      15
+#define UTF8_LENGTH_Object                               6
 
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_CONSTANTS_H */

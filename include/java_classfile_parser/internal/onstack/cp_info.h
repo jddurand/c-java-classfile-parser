@@ -202,7 +202,7 @@
     }                                                                   \
   } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_cp_info_validateb(classfilep, p) do {    \
+#define _JAVA_CLASSFILE_PARSER_cp_info_validateb(scope, classfilep, p) do {    \
   } while (0)
 
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CP_INFO_H */

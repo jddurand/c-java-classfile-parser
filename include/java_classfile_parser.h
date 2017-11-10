@@ -51,6 +51,8 @@ typedef enum _java_classfile_parser_err_e {
   JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_MODULE               = -21,
   JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_FINAL_ABSTRACT       = -22,
   JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_ANNOTATION_INTERFACE = -23,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_THIS_CLASS                          = -24,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS                         = -25
 } java_classfile_parser_err_e;
 
 static const char *java_classfile_parser_err[] = {
@@ -76,7 +78,9 @@ static const char *java_classfile_parser_err[] = {
   "ACC_INTERFACE flag is not set but the ACC_ANNOTATION flag is set",
   "ACC_INTERFACE flag is not set but the ACC_MODULE flag is set",
   "ACC_INTERFACE flag is not set but the ACC_FINAL and ACC_ABSTRACT flags are set",
-  "ACC_ANNOTATION flag is set but the ACC_INTERFACE flag is not set"
+  "ACC_ANNOTATION flag is set but the ACC_INTERFACE flag is not set",
+  "ClassFile's this_class is invalid",
+  "ClassFile's super_class is invalid"
 };
 
 #include <java_classfile_parser/export.h>
