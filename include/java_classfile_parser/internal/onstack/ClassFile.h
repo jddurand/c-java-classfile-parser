@@ -213,7 +213,7 @@
   } while (0)
 
 #define _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(scope, contexts, classfilep, p) do { \
-    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".magic", "start with magic = %x08lx", (unsigned long) p->magic); \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".magic", "start with magic = 0x%08lx", (unsigned long) p->magic); \
     __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".magic", "..... test magic == 0x%08lx", (unsigned long) 0xCAFEBABE); \
     if (p->magic != 0xCAFEBABE) {                                       \
       errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_MAGIC;		\
