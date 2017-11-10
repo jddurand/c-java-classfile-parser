@@ -423,7 +423,7 @@
       if (utf8_length > 0) {						\
 	for (i = 0; i < sizeof(utf8kos) / sizeof(utf8kos[0]); i++) {	\
   	  if (utf8_length == utf8kolength[i]) {				\
-	    if (memcmp(utf8_bytesp, utf8kos[i], utf8_length)) {         \
+            if (memcmp(utf8_bytesp, utf8kos[i], utf8_length) == 0) {    \
 	      errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME; \
 	      return 0;							\
             }								\

@@ -61,13 +61,13 @@ int main(int argc, char **argv) {
 
   classFilep = java_classfile_parser_ClassFile_newp(bytep, bytel, &remainsp, &remainsl);
   if (classFilep == NULL) {
-    fprintf(stderr, "%s parsing failure\n", argv[1]);
+    fprintf(stderr, "%s parsing failure, errno=%d\n", argv[1], errno);
     goto err;
   }
   fprintf(stderr, "%s parsing success, remains %lu bytes\n", argv[1], (unsigned long) remainsl);
 
   if (! java_classfile_parser_ClassFile_validateb(classFilep, classFilep)) {
-    fprintf(stderr, "%s validation failure\n", argv[1]);
+    fprintf(stderr, "%s validation failure, errno=%d\n", argv[1], errno);
     goto err;
   }
   fprintf(stderr, "%s validation success\n", argv[1]);
