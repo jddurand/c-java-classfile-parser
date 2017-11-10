@@ -28,20 +28,29 @@ typedef enum _java_classfile_parser_attribute_info_e {
 } java_classfile_parser_attribute_info_e;
 
 typedef enum _java_classfile_parser_err_e {
-  JAVA_CLASSFILE_PARSER_ERR_EFAULT                                    = - 1,
-  JAVA_CLASSFILE_PARSER_ERR_CP_INFO_TAG                               = - 2,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_MAGIC                           = - 3,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_UNSUPPORTED                     = - 4,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FLAG                 = - 5,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_VERSION              = - 6,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_THIS_CLASS           = - 7,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_SUPER_CLASS          = - 8,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_INTERFACES_COUNT     = - 9,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FIELDS_COUNT         = -10,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_METHODS_COUNT        = -11,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTES_COUNT     = -12,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX = -13,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME       = -14
+  JAVA_CLASSFILE_PARSER_ERR_EFAULT                                        = - 1,
+  JAVA_CLASSFILE_PARSER_ERR_CP_INFO_TAG                                   = - 2,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_MAGIC                               = - 3,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_UNSUPPORTED                         = - 4,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FLAG                     = - 5,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_VERSION                  = - 6,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_THIS_CLASS               = - 7,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_SUPER_CLASS              = - 8,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_INTERFACES_COUNT         = - 9,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FIELDS_COUNT             = -10,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_METHODS_COUNT            = -11,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTES_COUNT         = -12,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX     = -13,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME           = -14,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_ABSTRACT         = -15,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_FINAL            = -16,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_SUPER            = -17,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_ENUM             = -18,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_MODULE           = -19,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_ANNOTATION           = -20,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_MODULE               = -21,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_FINAL_ABSTRACT       = -22,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_ANNOTATION_INTERFACE = -23,
 } java_classfile_parser_err_e;
 
 static const char *java_classfile_parser_err[] = {
@@ -58,7 +67,16 @@ static const char *java_classfile_parser_err[] = {
   "ACC_MODULE flag is set but ClassFile's methods_count is invalid",
   "ACC_MODULE flag is set but ClassFile's attributes_count is invalid",
   "ACC_MODULE flag is set but ClassFile's attribute's name_index is invalid",
-  "ACC_MODULE flag is set but ClassFile's attribute's name is invalid"
+  "ACC_MODULE flag is set but ClassFile's attribute's name is invalid",
+  "ACC_INTERFACE flag is set but the ACC_ABSTRACT flag is not set",
+  "ACC_INTERFACE flag is set but the ACC_FINAL flag is set",
+  "ACC_INTERFACE flag is set but the ACC_SUPER flag is set",
+  "ACC_INTERFACE flag is set but the ACC_ENUM flag is set",
+  "ACC_INTERFACE flag is set but the ACC_MODULE flag is set",
+  "ACC_INTERFACE flag is not set but the ACC_ANNOTATION flag is set",
+  "ACC_INTERFACE flag is not set but the ACC_MODULE flag is set",
+  "ACC_INTERFACE flag is not set but the ACC_FINAL and ACC_ABSTRACT flags are set",
+  "ACC_ANNOTATION flag is set but the ACC_INTERFACE flag is not set"
 };
 
 #include <java_classfile_parser/export.h>

@@ -290,71 +290,70 @@
      */
 
 #define _JAVA_CLASSFILE_PARSER_ClassFile_access_flags_validateb(classfilep, p) do { \
-    java_classfile_parser_cp_info_t *cp_infop;				\
-    java_classfile_parser_attribute_info_t *attribute_infop;		\
-    static const char *utf8kos[] = {                                    \
-      UTF8_BYTES_ConstantValue,						\
-      UTF8_BYTES_Code,							\
-      UTF8_BYTES_StackMapTable,						\
-      UTF8_BYTES_Exceptions,						\
-      UTF8_BYTES_InnerClasses,						\
-      UTF8_BYTES_EnclosingMethod,					\
-      UTF8_BYTES_Synthetic,						\
-      UTF8_BYTES_Signature,						\
-      UTF8_BYTES_SourceFile,						\
-      UTF8_BYTES_SourceDebugExtension,					\
-      UTF8_BYTES_LineNumberTable,					\
-      UTF8_BYTES_LocalVariableTable,					\
-      UTF8_BYTES_LocalVariableTypeTable,				\
-      UTF8_BYTES_Deprecated,						\
-      UTF8_BYTES_RuntimeVisibleAnnotations,				\
-      UTF8_BYTES_RuntimeInvisibleAnnotations,				\
-      UTF8_BYTES_RuntimeVisibleParameterAnnotations,			\
-      UTF8_BYTES_RuntimeInvisibleParameterAnnotations,			\
-      UTF8_BYTES_RuntimeVisibleTypeAnnotations,				\
-      UTF8_BYTES_RuntimeInvisibleTypeAnnotations,			\
-      UTF8_BYTES_AnnotationDefault,					\
-      UTF8_BYTES_BootstrapMethods,					\
-      UTF8_BYTES_MethodParameters,					\
-      UTF8_BYTES_Module,						\
-      UTF8_BYTES_ModulePackages,					\
-      UTF8_BYTES_ModuleMainClass					\
-    };									\
-    static const java_classfile_parser_u2_t utf8kolength[] = {	        \
-      UTF8_LENGTH_ConstantValue,					\
-      UTF8_LENGTH_Code,							\
-      UTF8_LENGTH_StackMapTable,					\
-      UTF8_LENGTH_Exceptions,						\
-      UTF8_LENGTH_InnerClasses,						\
-      UTF8_LENGTH_EnclosingMethod,					\
-      UTF8_LENGTH_Synthetic,						\
-      UTF8_LENGTH_Signature,						\
-      UTF8_LENGTH_SourceFile,						\
-      UTF8_LENGTH_SourceDebugExtension,					\
-      UTF8_LENGTH_LineNumberTable,					\
-      UTF8_LENGTH_LocalVariableTable,					\
-      UTF8_LENGTH_LocalVariableTypeTable,				\
-      UTF8_LENGTH_Deprecated,						\
-      UTF8_LENGTH_RuntimeVisibleAnnotations,				\
-      UTF8_LENGTH_RuntimeInvisibleAnnotations,				\
-      UTF8_LENGTH_RuntimeVisibleParameterAnnotations,			\
-      UTF8_LENGTH_RuntimeInvisibleParameterAnnotations,			\
-      UTF8_LENGTH_RuntimeVisibleTypeAnnotations,			\
-      UTF8_LENGTH_RuntimeInvisibleTypeAnnotations,			\
-      UTF8_LENGTH_AnnotationDefault,					\
-      UTF8_LENGTH_BootstrapMethods,					\
-      UTF8_LENGTH_MethodParameters,					\
-      UTF8_LENGTH_Module,						\
-      UTF8_LENGTH_ModulePackages,					\
-      UTF8_LENGTH_ModuleMainClass					\
-    };									\
-    int i;								\
-    java_classfile_parser_CONSTANT_Utf8_info_t *utf8_infop = NULL;	\
-    java_classfile_parser_u2_t utf8_length;				\
-    java_classfile_parser_u1_t *utf8_bytesp;				\
-									\
     if ((p->access_flags & ACC_MODULE) == ACC_MODULE) {			\
       									\
+      java_classfile_parser_attribute_info_t *attribute_infop;		\
+      static const char *utf8kos[] = {                                  \
+        UTF8_BYTES_ConstantValue,                                       \
+        UTF8_BYTES_Code,                                                \
+        UTF8_BYTES_StackMapTable,                                       \
+        UTF8_BYTES_Exceptions,						\
+        UTF8_BYTES_InnerClasses,                                        \
+        UTF8_BYTES_EnclosingMethod,					\
+        UTF8_BYTES_Synthetic,						\
+        UTF8_BYTES_Signature,						\
+        UTF8_BYTES_SourceFile,						\
+        UTF8_BYTES_SourceDebugExtension,                                \
+        UTF8_BYTES_LineNumberTable,					\
+        UTF8_BYTES_LocalVariableTable,					\
+        UTF8_BYTES_LocalVariableTypeTable,				\
+        UTF8_BYTES_Deprecated,						\
+        UTF8_BYTES_RuntimeVisibleAnnotations,				\
+        UTF8_BYTES_RuntimeInvisibleAnnotations,				\
+        UTF8_BYTES_RuntimeVisibleParameterAnnotations,			\
+        UTF8_BYTES_RuntimeInvisibleParameterAnnotations,                \
+        UTF8_BYTES_RuntimeVisibleTypeAnnotations,                       \
+        UTF8_BYTES_RuntimeInvisibleTypeAnnotations,			\
+        UTF8_BYTES_AnnotationDefault,					\
+        UTF8_BYTES_BootstrapMethods,					\
+        UTF8_BYTES_MethodParameters,					\
+        UTF8_BYTES_Module,						\
+        UTF8_BYTES_ModulePackages,					\
+        UTF8_BYTES_ModuleMainClass					\
+      };                                                                \
+      static const java_classfile_parser_u2_t utf8kolength[] = {        \
+        UTF8_LENGTH_ConstantValue,					\
+        UTF8_LENGTH_Code,                                               \
+        UTF8_LENGTH_StackMapTable,					\
+        UTF8_LENGTH_Exceptions,						\
+        UTF8_LENGTH_InnerClasses,                                       \
+        UTF8_LENGTH_EnclosingMethod,					\
+        UTF8_LENGTH_Synthetic,						\
+        UTF8_LENGTH_Signature,						\
+        UTF8_LENGTH_SourceFile,						\
+        UTF8_LENGTH_SourceDebugExtension,                               \
+        UTF8_LENGTH_LineNumberTable,					\
+        UTF8_LENGTH_LocalVariableTable,					\
+        UTF8_LENGTH_LocalVariableTypeTable,				\
+        UTF8_LENGTH_Deprecated,						\
+        UTF8_LENGTH_RuntimeVisibleAnnotations,				\
+        UTF8_LENGTH_RuntimeInvisibleAnnotations,                        \
+        UTF8_LENGTH_RuntimeVisibleParameterAnnotations,			\
+        UTF8_LENGTH_RuntimeInvisibleParameterAnnotations,               \
+        UTF8_LENGTH_RuntimeVisibleTypeAnnotations,			\
+        UTF8_LENGTH_RuntimeInvisibleTypeAnnotations,			\
+        UTF8_LENGTH_AnnotationDefault,					\
+        UTF8_LENGTH_BootstrapMethods,					\
+        UTF8_LENGTH_MethodParameters,					\
+        UTF8_LENGTH_Module,						\
+        UTF8_LENGTH_ModulePackages,					\
+        UTF8_LENGTH_ModuleMainClass					\
+      };                                                                \
+      int i;								\
+      java_classfile_parser_CONSTANT_Utf8_info_t *utf8_infop = NULL;	\
+      java_classfile_parser_u2_t utf8_length;				\
+      java_classfile_parser_u1_t *utf8_bytesp;				\
+									\
       if (p->access_flags != ACC_MODULE) {				\
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_FLAG;	\
 	return 0;							\
@@ -364,20 +363,14 @@
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_VERSION; \
 	return 0;							\
       }									\
-      									\
-      if ((p->this_class < 1) || (p->this_class > p->constant_pool_count)) { \
-	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_THIS_CLASS; \
-	return 0;							\
-      }									\
-      cp_infop = p->constant_poolpp[p->this_class];			\
-      if (cp_infop == NULL) {						\
-	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_THIS_CLASS; \
-	return 0;							\
-      }									\
-      if (cp_infop->tag != JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class) { \
-	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_THIS_CLASS; \
-	return 0;							\
-      }									\
+                                                                        \
+      _JAVA_CLASSFILE_PARSER_IS_CP_INFO(                                \
+          classfilep,                                                   \
+          p->this_class,                                                \
+          JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class,                 \
+          JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_THIS_CLASS,    \
+                                                                        \
+      );                                                                \
       									\
       if (p->super_class != 0) {					\
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_SUPER_CLASS; \
@@ -408,18 +401,17 @@
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX; \
 	return 0;							\
       }									\
-      cp_infop = p->constant_poolpp[attribute_infop->attribute_name_index]; \
-      if (cp_infop == NULL) {						\
-	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX; \
-	return 0;							\
-      }									\
-      if (cp_infop->tag != JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Utf8) { \
-	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX; \
-	return 0;							\
-      }									\
-      utf8_infop = cp_infop->u.utf8Infop;				\
-      utf8_length = utf8_infop->length;					\
-      utf8_bytesp = utf8_infop->bytesp;					\
+      _JAVA_CLASSFILE_PARSER_IS_CP_INFO(                                \
+        classfilep,                                                     \
+        attribute_infop->attribute_name_index,                          \
+        JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Utf8,                    \
+        JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX, \
+        {                                                               \
+          utf8_infop = cp_infop->u.utf8Infop;                           \
+          utf8_length = utf8_infop->length;                             \
+          utf8_bytesp = utf8_infop->bytesp;                             \
+        }                                                               \
+      );                                                                \
       if (utf8_length > 0) {						\
 	for (i = 0; i < sizeof(utf8kos) / sizeof(utf8kos[0]); i++) {	\
   	  if (utf8_length == utf8kolength[i]) {				\
@@ -430,8 +422,47 @@
 	  }                                          			\
 	}								\
       }									\
-      									\
-    }                                                                   \
+    } else {                                                            \
+      if ((p->access_flags & ACC_INTERFACE) == ACC_INTERFACE) {         \
+        if ((p->access_flags & ACC_ABSTRACT) != ACC_ABSTRACT) {         \
+          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_ABSTRACT;	\
+          return 0;                                                     \
+        }                                                               \
+        if ((p->access_flags & ACC_FINAL) == ACC_FINAL) {                 \
+          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_FINAL;	\
+          return 0;                                                     \
+        }                                                               \
+        if ((p->access_flags & ACC_SUPER) == ACC_SUPER) {                 \
+          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_SUPER;	\
+          return 0;                                                     \
+        }                                                               \
+        if ((p->access_flags & ACC_ENUM) == ACC_ENUM) {                 \
+          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_ENUM;	\
+          return 0;                                                     \
+        }                                                               \
+        if ((p->access_flags & ACC_MODULE) == ACC_MODULE) {                 \
+          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_INTERFACE_FLAG_MODULE;	\
+          return 0;                                                     \
+        }                                                               \
+      } else {                                                          \
+        if ((p->access_flags & ACC_ANNOTATION) == ACC_ANNOTATION) {                 \
+          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_ANNOTATION;	\
+          return 0;                                                     \
+        }                                                               \
+        if ((p->access_flags & ACC_MODULE) == ACC_MODULE) {                 \
+          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_MODULE;	\
+          return 0;                                                     \
+        }                                                               \
+        if (((p->access_flags & ACC_FINAL) == ACC_FINAL) && ((p->access_flags & ACC_ABSTRACT) == ACC_ABSTRACT)) { \
+          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_FINAL_ABSTRACT;	\
+          return 0;                                                     \
+        }                                                               \
+        if (((p->access_flags & ACC_ANNOTATION) == ACC_ANNOTATION) && ((p->access_flags & ACC_INTERFACE) != ACC_INTERFACE)) { \
+          errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_ANNOTATION_INTERFACE;	\
+          return 0;                                                     \
+        }                                                               \
+      }                                                                 \
+    }									\
   } while (0)
 
 #define _JAVA_CLASSFILE_PARSER_ClassFile_validateb(classfilep, p) do {  \

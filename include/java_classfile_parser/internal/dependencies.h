@@ -9,6 +9,7 @@
 #include "java_classfile_parser/internal/endian.h"
 #include "java_classfile_parser/internal/trace.h"
 #include "java_classfile_parser/internal/ntohx.h"
+#include "java_classfile_parser/internal/util.h"
 #include "java_classfile_parser/internal/onstack/free.h"
 #include "java_classfile_parser/internal/onstack/u1.h"
 #include "java_classfile_parser/internal/onstack/u1/array.h"
