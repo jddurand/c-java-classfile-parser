@@ -364,12 +364,12 @@
 	return 0;							\
       }									\
                                                                         \
-      _JAVA_CLASSFILE_PARSER_IS_CP_INFO(                                \
+      _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(                           \
           classfilep,                                                   \
           p->this_class,                                                \
           JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class,                 \
           JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_THIS_CLASS,    \
-                                                                        \
+          _JAVA_CLASSFILE_PARSER_UTIL_EMPTY_BLOCK                       \
       );                                                                \
       									\
       if (p->super_class != 0) {					\
@@ -401,7 +401,7 @@
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_ATTRIBUTE_NAME_INDEX; \
 	return 0;							\
       }									\
-      _JAVA_CLASSFILE_PARSER_IS_CP_INFO(                                \
+      _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(                           \
         classfilep,                                                     \
         attribute_infop->attribute_name_index,                          \
         JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Utf8,                    \
