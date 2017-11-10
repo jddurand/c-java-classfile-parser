@@ -292,7 +292,7 @@
 #define _JAVA_CLASSFILE_PARSER_ClassFile_access_flags_validateb(classfilep, p) do { \
     java_classfile_parser_cp_info_t *cp_infop;				\
     java_classfile_parser_attribute_info_t *attribute_infop;		\
-    static const java_classfile_parser_u1_t *utf8kos[] = {		\
+    static const char *utf8kos[] = {                                    \
       UTF8_BYTES_ConstantValue,						\
       UTF8_BYTES_Code,							\
       UTF8_BYTES_StackMapTable,						\
@@ -360,7 +360,7 @@
 	return 0;							\
       }									\
       									\
-      if (p->major_version < 53) {				\
+      if (p->major_version < 53) {                                      \
 	errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_MODULE_VERSION; \
 	return 0;							\
       }									\
