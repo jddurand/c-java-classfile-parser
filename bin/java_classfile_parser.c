@@ -11,7 +11,12 @@
 #define JAVA_CLASSFILE_PARSER_CLOSE close
 #endif
 
-int main(int argc, char **argv) {
+static java_classfile_parser_ClassFile_t *java_classfile_parser_loader(java_classfile_parser_CONSTANT_Utf8_info_t *utf8Infop);
+
+/****************************************************************************/
+int main(int argc, char **argv)
+/****************************************************************************/
+{
   int                                fd = -1;
   char                              *bytep = NULL;
   size_t                             bytel;
@@ -66,7 +71,7 @@ int main(int argc, char **argv) {
   }
   fprintf(stderr, "%s parsing success, remains %lu bytes\n", argv[1], (unsigned long) remainsl);
 
-  if (! java_classfile_parser_ClassFile_validateb(classFilep, classFilep)) {
+  if (! java_classfile_parser_ClassFile_validateb(NULL /* java_classfile_parser_loader */, classFilep)) {
     fprintf(stderr, "%s validation failure, errno=%d\n", argv[1], errno);
     goto err;
   }
@@ -91,3 +96,11 @@ int main(int argc, char **argv) {
 
   return rc;
 }
+
+/****************************************************************************/
+static java_classfile_parser_ClassFile_t *java_classfile_parser_loader(java_classfile_parser_CONSTANT_Utf8_info_t *utf8Infop)
+/****************************************************************************/
+{
+  return NULL;
+}
+

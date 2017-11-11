@@ -16,7 +16,7 @@
     }                                                                   \
   } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_CONSTANT_MethodHandle_info_validateb(scope, classfilep, p) do { \
+#define _JAVA_CLASSFILE_PARSER_CONSTANT_MethodHandle_info_validateb(scope, loaderp, p) do { \
   } while (0)
 
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CONSTANT_METHODHANDLE_INFO_H */

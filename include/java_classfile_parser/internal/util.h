@@ -12,13 +12,13 @@
       return 0;                                                         \
     } else {								\
       java_classfile_parser_cp_info_t *_##scope##cp_infop = classfilep->constant_poolpp[index];	\
-      __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, context, "..... constant_poolpp[%u] != NULL ?", (int) index); \
+      __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, context, "..... constant_poolpp[%u] is %p != NULL ?", (int) index, _##scope##cp_infop); \
       if (_##scope##cp_infop == NULL) {					\
 	errno = errno_invalid_index;					\
 	return 0;							\
       }									\
       if (type >= 0) {							\
-	__JAVA_CLASSFILE_PARSER_TRACEF(_##scope, context, "..... constant_poolpp[%u]->tag == %d ?", (int) index, (int) type); \
+	__JAVA_CLASSFILE_PARSER_TRACEF(_##scope, context, "..... constant_poolpp[%u]->tag is %u == %d ?", (int) index, (unsigned int) _##scope##cp_infop->tag, (int) type); \
 	if (_##scope##cp_infop->tag != type) {				\
 	  errno = errno_invalid_index;					\
 	  return 0;							\
