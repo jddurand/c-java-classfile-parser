@@ -247,7 +247,7 @@
 #else
 #define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(scope, contexts, classfilep, p) do { \
     __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".{major_version,minor_version}", "start with major_version = %u, minor_version = %u", (unsigned int) p->major_version, (unsigned int) p->minor_version); \
-    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".{major_version,minor_version}", "skip"); \
+    __JAVA_CLASSFILE_PARSER_TRACE (_##scope, contexts ".{major_version,minor_version}", "skip"); \
   } while (0)
 #endif
 
