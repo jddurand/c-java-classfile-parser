@@ -71,7 +71,7 @@ int main(int argc, char **argv)
   }
   fprintf(stderr, "%s parsing success, remains %lu bytes\n", argv[1], (unsigned long) remainsl);
 
-  if (! java_classfile_parser_ClassFile_validateb(NULL /* java_classfile_parser_loader */, classFilep)) {
+  if (! java_classfile_parser_ClassFile_validateb(classFilep)) {
     fprintf(stderr, "%s validation failure, errno=%d\n", argv[1], errno);
     goto err;
   }

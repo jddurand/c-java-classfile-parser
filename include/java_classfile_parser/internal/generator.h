@@ -17,13 +17,13 @@
     _java_classfile_parser_##type##_freev(p);                           \
   }                                                                     \
                                                                         \
-  short java_classfile_parser_##type##_validateb(java_classfile_parser_loaderp loaderp, java_classfile_parser_##type##_t *typep) \
+  short java_classfile_parser_##type##_validateb(java_classfile_parser_##type##_t *typep) \
   {                                                                     \
     if (typep == NULL) {                                                \
       errno = EINVAL;                                                   \
       return 0;                                                         \
     }                                                                   \
-    return _java_classfile_parser_##type##_validateb(loaderp, typep);   \
+    return _java_classfile_parser_##type##_validateb(typep);   \
   }
 
 
@@ -96,9 +96,9 @@
     _JAVA_CLASSFILE_PARSER_##type##_freev(, p);                         \
   }                                                                     \
                                                                         \
-  static short _java_classfile_parser_##type##_validateb(java_classfile_parser_loaderp loaderp, java_classfile_parser_##type##_t *typep) \
+  static short _java_classfile_parser_##type##_validateb(java_classfile_parser_##type##_t *typep) \
   {                                                                     \
-    _JAVA_CLASSFILE_PARSER_##type##_validateb(, loaderp, typep);        \
+    _JAVA_CLASSFILE_PARSER_##type##_validateb(, typep);                 \
     return 1;                                                           \
   }
 

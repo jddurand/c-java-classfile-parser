@@ -212,7 +212,7 @@
     }                                                                   \
   } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(scope, contexts, classfilep, p) do { \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(scope, contexts, p) do { \
     __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".magic", "start with magic = 0x%08lx", (unsigned long) p->magic); \
     __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".magic", ".......... magic == 0x%08lx ?", (unsigned long) 0xCAFEBABE); \
     if (p->magic != 0xCAFEBABE) {                                       \
@@ -232,7 +232,7 @@
 
 #if defined(JAVA_CLASSFILE_PARSER_JNI_VERSION_MIN) && defined(JAVA_CLASSFILE_PARSER_JNI_VERSION_MAX)
 /* We make a float out of major_version and minor_version and compares */
-#define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(scope, contexts, classfilep, p) do { \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(scope, contexts, p) do { \
     float _##scope##minf = (float) JAVA_CLASSFILE_PARSER_JNI_VERSION_MIN; \
     float _##scope##maxf = (float) JAVA_CLASSFILE_PARSER_JNI_VERSION_MAX; \
     float _##scope##f = (p->major_version * 1.0) + (p->minor_version / 10.); \
@@ -245,7 +245,7 @@
     }                                                                   \
   } while (0)
 #else
-#define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(scope, contexts, classfilep, p) do { \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(scope, contexts, p) do { \
     __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".{major_version,minor_version}", "start with major_version = %u, minor_version = %u", (unsigned int) p->major_version, (unsigned int) p->minor_version); \
     __JAVA_CLASSFILE_PARSER_TRACE (_##scope, contexts ".{major_version,minor_version}", "skip"); \
   } while (0)
@@ -301,7 +301,7 @@
    so the case ACC_ANNOTATION can happen only in the interface mode, so ACC_INTERFACE is set by definition.
      */
 
-#define _JAVA_CLASSFILE_PARSER_ClassFile_access_flags_validateb(scope, contexts, loaderp, p) do { \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_access_flags_validateb(scope, contexts, p) do { \
     __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".access_flags", "start with access_flags = 0x%08lx, major_version = %u, this_class = %u, super_class = %u, interfaces_count = %u, fields_count = %u, methods_count = %u, attributes_count = %u", (unsigned long) p->access_flags, (unsigned int) p->major_version, (unsigned int) p->this_class, (unsigned int) p->super_class, (unsigned int) p->interfaces_count, (unsigned int) p->fields_count, (unsigned int) p->methods_count, (unsigned int) p->methods_count); \
     if ((p->access_flags & ACC_MODULE) == ACC_MODULE) {			\
       static const char *_##scope##utf8kos[] = {			\
@@ -490,7 +490,7 @@
     }									\
   } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_ClassFile_this_class_validateb(scope, contexts, loaderp, p) do { \
+#define _JAVA_CLASSFILE_PARSER_ClassFile_this_class_validateb(scope, contexts, p) do { \
     __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".this_class", "start with this_class = %u", (unsigned int) p->this_class); \
     if ((p->access_flags & ACC_MODULE) != ACC_MODULE) {			\
       _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(_##scope,			\
@@ -504,9 +504,11 @@
     }									\
   } while (0)
 
-/* Searching for super class may lead to infinite recursion */
-/* We use a stack-free implementation to loop on wanted superclasses, and a hash to remember what we asked for */
-#define _JAVA_CLASSFILE_PARSER_ClassFile_super_class_validateb(scope, contexts, loaderp, p) do { \
+/* In case of a the Class mode, searching if the direct superclass nor any of its superclasses may have the ACC_FINAL flag */
+/* is NOT done because this module is intended for transpiling to any language: Java for instance will not allow recursive */
+/* classes. But perl will not allow that. Just an example. */
+
+#define _JAVA_CLASSFILE_PARSER_ClassFile_super_class_validateb(scope, contexts, p) do { \
     __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".super_class", "start with super_class = %u", (unsigned int) p->super_class); \
     if ((p->access_flags & ACC_MODULE) != ACC_MODULE) {			\
       if ((p->access_flags & ACC_INTERFACE) != ACC_INTERFACE) {		\
@@ -518,37 +520,7 @@
 						 p->super_class,	\
 						 JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class, \
 						 JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS, \
-						 {			\
-                                                   __JAVA_CLASSFILE_PARSER_TRACEF(__##scope, contexts ".super_class", "points to a Class_info that have name_index = %u", __##scope##cp_infop->u.classInfop->name_index); \
-						   _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(__##scope, \
-											  contexts ".super_class", \
-											  p, \
-											  __##scope##cp_infop->u.classInfop->name_index, \
-											  JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Utf8, \
-											  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_THIS_CLASS, \
-											  { \
-											    java_classfile_parser_CONSTANT_Utf8_info_t *___##scope##utf8Infop = ___##scope##cp_infop->u.utf8Infop; \
-											    java_classfile_parser_ClassFile_t *___##scope##superclassp; \
-                                                                                             \
-                                                                                            __JAVA_CLASSFILE_PARSER_TRACE_HEXDUMP(___##scope, contexts ".super_class", "Current JavaUtf8 bytes at constant poolpp[super_class's name_index]", ___##scope##utf8Infop->bytesp, ___##scope##utf8Infop->length); \
-											    if ((___##scope##utf8Infop->length <= 0) || (___##scope##utf8Infop->bytesp == NULL)) { \
-											      errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_THIS_CLASS; \
-											      return 0; \
-											    } \
-                                                                                            if (loaderp != NULL) { \
-                                                                                              ___##scope##superclassp = loaderp(___##scope##utf8Infop); \
-                                                                                              if (___##scope##superclassp == NULL) { \
-                                                                                                errno = JAVA_CLASSFILE_PARSER_ERR_SUPER_CLASS_LOAD_FAILURE; \
-                                                                                                return 0; \
-                                                                                              } \
-                                                                                              if ((___##scope##superclassp->access_flags & ACC_FINAL) == ACC_FINAL) { \
-                                                                                                errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS_FINAL; \
-                                                                                                return 0; \
-                                                                                              } \
-                                                                                            } \
-                                                                                          } \
-                                                                                          ); \
-						 }			\
+                                                 _JAVA_CLASSFILE_PARSER_UTIL_EMPTY_BLOCK \
 						 );                     \
 	} else {							\
 	  _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(_##scope,		\
@@ -579,46 +551,66 @@
 						 }			\
 						 );                     \
 	}								\
-      } else { \
-	 __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".super_class", ".... Interface mode"); \
-	 _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(_##scope,		\
-						 contexts ".super_class", \
-						 p,                     \
-						 p->super_class,         \
-						 JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class, \
-						 JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS, \
-						 {			\
-                                                   __JAVA_CLASSFILE_PARSER_TRACEF(__##scope, contexts ".super_class", "points to a Class_info that have name_index = %u", __##scope##cp_infop->u.classInfop->name_index); \
-						   _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(__##scope, \
-											  contexts ".super_class", \
-											  p, \
-											  __##scope##cp_infop->u.classInfop->name_index, \
-											  JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Utf8, \
-											  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS, \
-											  { \
-											    java_classfile_parser_CONSTANT_Utf8_info_t *___##scope##utf8Infop = ___##scope##cp_infop->u.utf8Infop; \
-                                                                                             \
-                                                                                            __JAVA_CLASSFILE_PARSER_TRACE_HEXDUMP(___##scope, contexts ".super_class", "Current JavaUtf8 bytes at constant poolpp[super_class's name_index]", ___##scope##utf8Infop->bytesp, ___##scope##utf8Infop->length); \
-                                                                                            __JAVA_CLASSFILE_PARSER_TRACE_HEXDUMP(___##scope, contexts ".super_class", "Wanted JavaUtf8 bytes", UTF8_BYTES_java_lang_Object, UTF8_LENGTH_java_lang_Object); \
-											    if ((___##scope##utf8Infop->length != UTF8_LENGTH_java_lang_Object) || (memcmp(___##scope##utf8Infop->bytesp, UTF8_BYTES_java_lang_Object, UTF8_LENGTH_java_lang_Object) != 0)) { \
-											      errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS; \
-											      return 0; \
-											    } \
-											  } \
-                                                                                          ); \
-						 }			\
-						 );                     \
+      } else {                                                          \
+        __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".super_class", ".... Interface mode"); \
+        _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(_##scope,		\
+                                               contexts ".super_class", \
+                                               p,                       \
+                                               p->super_class,          \
+                                               JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class, \
+                                               JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS, \
+                                               {			\
+                                                 __JAVA_CLASSFILE_PARSER_TRACEF(__##scope, contexts ".super_class", "points to a Class_info that have name_index = %u", __##scope##cp_infop->u.classInfop->name_index); \
+                                                 _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(__##scope, \
+                                                                                        contexts ".super_class", \
+                                                                                        p, \
+                                                                                        __##scope##cp_infop->u.classInfop->name_index, \
+                                                                                        JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Utf8, \
+                                                                                        JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS, \
+                                                                                        { \
+                                                                                          java_classfile_parser_CONSTANT_Utf8_info_t *___##scope##utf8Infop = ___##scope##cp_infop->u.utf8Infop; \
+                                                                                           \
+                                                                                          __JAVA_CLASSFILE_PARSER_TRACE_HEXDUMP(___##scope, contexts ".super_class", "Current JavaUtf8 bytes at constant poolpp[super_class's name_index]", ___##scope##utf8Infop->bytesp, ___##scope##utf8Infop->length); \
+                                                                                          __JAVA_CLASSFILE_PARSER_TRACE_HEXDUMP(___##scope, contexts ".super_class", "Wanted JavaUtf8 bytes", UTF8_BYTES_java_lang_Object, UTF8_LENGTH_java_lang_Object); \
+                                                                                          if ((___##scope##utf8Infop->length != UTF8_LENGTH_java_lang_Object) || (memcmp(___##scope##utf8Infop->bytesp, UTF8_BYTES_java_lang_Object, UTF8_LENGTH_java_lang_Object) != 0)) { \
+                                                                                            errno = JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS; \
+                                                                                            return 0; \
+                                                                                          } \
+                                                                                        } \
+                                                                                        ); \
+                                               }			\
+                                               );                       \
       }									\
     }									\
   } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_ClassFile_validateb(scope, loaderp, p) do { \
+/* Each value in the interfaces array must be a valid index into the constant_pool table. */
+/* The constant_pool entry at each value of interfaces[i], where 0 ≤ i < interfaces_count */
+/* must be a CONSTANT_Class_info structure. */
+#define _JAVA_CLASSFILE_PARSER_ClassFile_interfacesp_validateb(scope, contexts, p) do { \
+    java_classfile_parser_u2_t _##scope##i;                             \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, contexts ".interfacesp", "start with interfaces_count = %u, interfacesp = %p", (unsigned int) p->interfaces_count, p->interfacesp); \
+    for (_##scope##i = 0; _##scope##i < p->interfaces_count; _##scope##i++) { \
+      _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(                           \
+                                             _##scope,                  \
+                                             contexts ".interfacesp",   \
+                                             p,                         \
+                                             p->interfacesp[_##scope##i], \
+                                             JAVA_CLASSFILE_PARSER_CP_INFO_CONSTANT_Class, \
+                                             JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_INTERFACE, \
+                                             _JAVA_CLASSFILE_PARSER_UTIL_EMPTY_BLOCK \
+                                                                        ); \
+    }                                                                   \
+  } while (0)
+
+#define _JAVA_CLASSFILE_PARSER_ClassFile_validateb(scope, p) do {  \
     __JAVA_CLASSFILE_PARSER_TRACE(_##scope, "ClassFile", "start"); \
-    _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(_##scope, "ClassFile", loaderp, p); \
-    _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(_##scope, "ClassFile", loaderp, p); \
-    _JAVA_CLASSFILE_PARSER_ClassFile_access_flags_validateb(_##scope, "ClassFile", loaderp, p); \
-    _JAVA_CLASSFILE_PARSER_ClassFile_this_class_validateb(_##scope, "ClassFile", loaderp, p); \
-    _JAVA_CLASSFILE_PARSER_ClassFile_super_class_validateb(_##scope, "ClassFile", loaderp, p); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_magic_validateb(_##scope, "ClassFile", p); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_version_validateb(_##scope, "ClassFile", p); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_access_flags_validateb(_##scope, "ClassFile", p); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_this_class_validateb(_##scope, "ClassFile", p); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_super_class_validateb(_##scope, "ClassFile", p); \
+    _JAVA_CLASSFILE_PARSER_ClassFile_interfacesp_validateb(_##scope, "ClassFile", p); \
   } while (0)
 
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CLASSFILE_H */

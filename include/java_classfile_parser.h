@@ -53,8 +53,8 @@ typedef enum _java_classfile_parser_err_e {
   JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_ACC_CLASS_FLAG_ANNOTATION_INTERFACE = -23,
   JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_THIS_CLASS                          = -24,
   JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS                         = -25,
-  JAVA_CLASSFILE_PARSER_ERR_SUPER_CLASS_LOAD_FAILURE                      = -27,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS_FINAL                   = -28,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_INTERFACE                           = -26,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_FIELD                               = -27
 } java_classfile_parser_err_e;
 
 static const char *java_classfile_parser_err[] = {
@@ -83,14 +83,12 @@ static const char *java_classfile_parser_err[] = {
   "ACC_ANNOTATION flag is set but the ACC_INTERFACE flag is not set",
   "ClassFile's this_class is invalid",
   "ClassFile's super_class is invalid",
-  "Super-class load failure",
-  "One of the super classes have the ACC_FINAL flag"
+  "ClassFile's interface is invalid",
+  "ClassFile's field is invalid"
 };
 
 #include <java_classfile_parser/export.h>
 #include <java_classfile_parser/structures.h>
-
-typedef java_classfile_parser_ClassFile_t *(*java_classfile_parser_loaderp)(java_classfile_parser_CONSTANT_Utf8_info_t *utf8Infop);
 
 #ifdef __cplusplus
 extern "C" {
@@ -98,7 +96,7 @@ extern "C" {
   /* All functions have the same template */
 #define JAVA_CLASSFILE_PARSER_DECL(type)                                \
   java_classfile_parser_EXPORT java_classfile_parser_##type##_t *java_classfile_parser_##type##_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp); \
-  java_classfile_parser_EXPORT short                             java_classfile_parser_##type##_validateb(java_classfile_parser_loaderp loaderp, java_classfile_parser_##type##_t *p); \
+  java_classfile_parser_EXPORT short                             java_classfile_parser_##type##_validateb(java_classfile_parser_##type##_t *p); \
   java_classfile_parser_EXPORT void                              java_classfile_parser_##type##_freev(java_classfile_parser_##type##_t *p)
 
   JAVA_CLASSFILE_PARSER_DECL(ClassFile);
