@@ -5,7 +5,7 @@
 #define _JAVA_CLASSFILE_PARSER_UTIL_ANY_TYPE -1
 
 #define _JAVA_CLASSFILE_PARSER_UTIL_IS_CP_INFO(scope, context, classfilep, index, type, errno_invalid_index, block_with_cp_infop) do { \
-    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, context, "constant_pool lookup with index = %d, type = %d", (int) index, (int) type); \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, context, "constant_pool lookup with index = %d, wanted type = %d", (int) index, (int) type); \
     __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, context, "..... 1 <= %d <= %u ?", (int) index, (unsigned int) classfilep->constant_pool_count); \
     if ((index < 1) || (index > classfilep->constant_pool_count)) {     \
       errno = errno_invalid_index;                                      \
