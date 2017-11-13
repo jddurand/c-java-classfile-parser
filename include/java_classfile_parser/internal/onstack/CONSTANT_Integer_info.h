@@ -15,7 +15,7 @@
     }                                                                   \
   } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_CONSTANT_Integer_info_validateb(scope, p) do { \
+#define _JAVA_CLASSFILE_PARSER_CONSTANT_Integer_info_validateb(scope, classfilep, p) do { \
   } while (0)
 
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_CONSTANT_INTEGER_INFO_H */

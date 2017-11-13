@@ -54,7 +54,8 @@ typedef enum _java_classfile_parser_err_e {
   JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_THIS_CLASS                          = -24,
   JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_SUPER_CLASS                         = -25,
   JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_INTERFACE                           = -26,
-  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_FIELD                               = -27
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_FIELD                               = -27,
+  JAVA_CLASSFILE_PARSER_ERR_CLASSFILE_FIELD_INFO_ACCESS_FLAGS             = -28
 } java_classfile_parser_err_e;
 
 static const char *java_classfile_parser_err[] = {
@@ -84,7 +85,8 @@ static const char *java_classfile_parser_err[] = {
   "ClassFile's this_class is invalid",
   "ClassFile's super_class is invalid",
   "ClassFile's interface is invalid",
-  "ClassFile's field is invalid"
+  "ClassFile's field is invalid",
+  "ClassFile's field_info's access_flags is invalid"
 };
 
 #include <java_classfile_parser/export.h>
@@ -96,7 +98,7 @@ extern "C" {
   /* All functions have the same template */
 #define JAVA_CLASSFILE_PARSER_DECL(type)                                \
   java_classfile_parser_EXPORT java_classfile_parser_##type##_t *java_classfile_parser_##type##_newp(char *bufferp, size_t lengthl, char **bufferpp, size_t *lengthlp); \
-  java_classfile_parser_EXPORT short                             java_classfile_parser_##type##_validateb(java_classfile_parser_##type##_t *p); \
+  java_classfile_parser_EXPORT short                             java_classfile_parser_##type##_validateb(java_classfile_parser_ClassFile_t *classfilep, java_classfile_parser_##type##_t *p); \
   java_classfile_parser_EXPORT void                              java_classfile_parser_##type##_freev(java_classfile_parser_##type##_t *p)
 
   JAVA_CLASSFILE_PARSER_DECL(ClassFile);

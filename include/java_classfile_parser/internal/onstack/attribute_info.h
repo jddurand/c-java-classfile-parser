@@ -24,7 +24,22 @@
     }                                                                   \
   } while (0)
 
-#define _JAVA_CLASSFILE_PARSER_attribute_info_validateb(scope, p) do { \
+#define _JAVA_CLASSFILE_PARSER_attribute_info_validate_module_modeb(scope, classfilep, p) do { \
+    short _##scope##have_Moduleb = 0;                                   \
+    java_classfile_parser_u2_t _##scope##i;                             \
+                                                                        \
+    __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".attribute", "..... Module mode"); \
+    for (_##scope##i = 0; _##scope##i < p->attributes_count; _##scope##i++) { \
+    }                                                                   \
+    
+  } while (0)
+
+#define _JAVA_CLASSFILE_PARSER_attribute_info_validateb(scope, classfilep, p) do { \
+    __JAVA_CLASSFILE_PARSER_TRACEF(_##scope, "attribute", "start with attributes_count = %u, attributespp = %p", (unsigned long) classfilep->attributes_count, p); \
+    if ((classfilep->access_flags & JAVA_CLASSFILE_PARSER_CLASSFILE_ACC_MODULE) == JAVA_CLASSFILE_PARSER_CLASSFILE_ACC_MODULE) { \
+      _JAVA_CLASSFILE_PARSER_attribute_info_validate_module_modeb(scope, classfilep, p); \
+    } else {                                                            \
+    }                                                                   \
   } while (0)
 
 #endif /* JAVA_CLASSFILE_PARSER_INTERNAL_ONSTACK_ATTRIBUTE_INFO_H */
