@@ -28,10 +28,9 @@
     short _##scope##have_Moduleb = 0;                                   \
     java_classfile_parser_u2_t _##scope##i;                             \
                                                                         \
-    __JAVA_CLASSFILE_PARSER_TRACE(_##scope, contexts ".attribute", "..... Module mode"); \
-    for (_##scope##i = 0; _##scope##i < p->attributes_count; _##scope##i++) { \
+    __JAVA_CLASSFILE_PARSER_TRACE(_##scope, "attribute", "..... Module mode"); \
+    for (_##scope##i = 0; _##scope##i < classfilep->attributes_count; _##scope##i++) { \
     }                                                                   \
-    
   } while (0)
 
 #define _JAVA_CLASSFILE_PARSER_attribute_info_validateb(scope, classfilep, p) do { \
